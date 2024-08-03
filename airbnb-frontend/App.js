@@ -5,6 +5,8 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import IntroScreen from './src/screens/IntroScreen';
 import MenuScreen from './src/screens/MenuScreen';
+import ReadyStartScreen from './src/screens/ReadyStartScreen';
+import VideoScreen from './src/screens/VideoScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -14,6 +16,8 @@ const Navigator = () => {
         <Stack.Navigator screenOptions={{ headerStyle: { backgroundColor: 'whitesmoke' } }}>
           <Stack.Screen name="Menu" component={MenuScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Intro" component={IntroScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="ReadyStart" component={ReadyStartScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Video" component={VideoScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
     </NavigationContainer>
   )
