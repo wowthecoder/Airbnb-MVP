@@ -1,0 +1,89 @@
+{
+    "areas": [
+        {
+            "id": 1,
+            "description": "City center with famous restaurants, historical landmarks and shopping centers."
+        },
+        {
+            "id": 2,
+            "description": "Shopping district featuring over 100 stores, from fashion to technology."
+        },
+        {
+            "id": 3,
+            "description": "Park with a lake offering boat rentals, nature trails, and sports facilities."
+        },
+        {
+            "id": 4,
+            "description": "Scenic beach with golden sands and crystal-clear waters."
+        }
+    ],
+    "properties": [
+        {
+            "id": 1,
+            "price": 200000,
+            "surrounding_hotels": 200,
+            "avg_hotel_fee": 100,
+            "renovation_costs": 30000,
+            "note": "2 min walk to city center with a lot of shops and restaurants"
+        },
+        {
+            "id": 2,
+            "price": 100000,
+            "surrounding_hotels": 30,
+            "avg_hotel_fee": 60,
+            "renovation_costs": 10000,
+            "note": "40 min bus ride to city center, 5 min walk to shops and restaurants"
+        },
+        {
+            "id": 1,
+            "price": 150000,
+            "surrounding_hotels": 120,
+            "avg_hotel_fee": 80,
+            "renovation_costs": 20000,
+            "note": "10 min bus ride to city center, 20 min walk to shops and restaurants"
+        }
+    ],
+    "finance_options": [
+        {
+            "id": 1,
+            "title": "Pay the entire sum in cash",
+            "description": ""
+        },
+        {
+            "id": 2,
+            "title": "Repayment Mortgage",
+            "description": "Interest rate of 5% per annum for 30 years + deposit (25% of property price )"
+        },
+        {
+            "id": 3,
+            "title": "Interest-only Mortgage",
+            "description": "Interest rate of 6.5% per annum for 30 years + deposit (25% of property price )"
+        }
+    ],
+    "insurance_options": [
+        {
+            "id": 1,
+            "title": "Buildings Insurance",
+            "description": "Protects the structure of your home (walls, roof) and permanent fixtures (kitchen).",
+            "annual_fee": 298
+        },
+        {
+            "id": 2,
+            "title": "Contents Insurance",
+            "description": "Protects belongings inside your home, such as furniture and electronics.",
+            "annual_fee": 132
+        },
+        {
+            "id": 3,
+            "title": "Buildings and Contents Insurance",
+            "description": "",
+            "annual_fee": 375
+        },
+        {
+            "id": 3,
+            "title": "No Insurance",
+            "description": "",
+            "annual_fee": 0
+        }
+    ]
+}

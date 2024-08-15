@@ -2,11 +2,13 @@ import { StyleSheet, View, ImageBackground, Image, Text, TouchableHighlight, Tou
 import { useState } from 'react';
 import { useNavigation } from "@react-navigation/native";
 import Global from '../global';
+import data from '../database.json';
 
 const MainMapScreen = () => {  
     const [msg, setMsg] = useState(Global.welcomeMsg);
     const [infi, setInfi] = useState(Global.handsUpImg);
     const [seasonIcon, setSeasonIcon] = useState(Global.winterIcon);
+    const [showAreaInfo, setShowAreaInfo] = useState([false, false, false, false]);
     const navigation = useNavigation();
 
     const getGraphs = () => {
@@ -19,24 +21,24 @@ const MainMapScreen = () => {
 
     const showInfo = ( number ) => {
         console.log(number);
-        // switch (number) { 
-        //     case 1:
-        //         setMsg(Global.introMsg1);
-        //         setInfi(Global.pointingImg);
-        //         break;
-        //     case 2:
-        //         setMsg(Global.introMsg2);
-        //         setInfi(Global.handsUpImg);
-        //         break;
-        //     case 3:
-        //         setMsg(Global.introMsg3);
-        //         setInfi(Global.handsUpImg);
-        //         break;
-        //     case 4:
-        //         setMsg(Global.introMsg4);
-        //         setInfi(Global.handsUpImg);
-        //         break;
-        // };
+        switch (number) { 
+            case 1:
+                setShowAreaInfo([true, false, false, false]);
+                break;
+            case 2:
+                setShowAreaInfo([false, true, false, false]);
+                break;
+            case 3:
+                setShowAreaInfo([false, false, true, false]);
+                break;
+            case 4:
+                setShowAreaInfo([false, false, false, true]);
+                break;
+        };
+    }
+
+    const showPropertyInfo = ( number ) => {
+        console.log(number);
     }
 
     return (
@@ -57,19 +59,31 @@ const MainMapScreen = () => {
                     <Image source={Global.infiHQptr} style={[styles.pointers, styles.infiHQ]} />
                 </TouchableWithoutFeedback>
                 <TouchableWithoutFeedback onPress={()=>showInfo(1)}>
-                    <Image source={Global.propertyInfoPtr} style={[styles.pointers, styles.infoPtr1]} />
+                    <Image source={Global.areaInfoPtr} style={[styles.pointers, styles.infoPtr1]} />
                 </TouchableWithoutFeedback>
                 <TouchableWithoutFeedback onPress={()=>showInfo(2)}>
-                    <Image source={Global.propertyInfoPtr} style={[styles.pointers, styles.infoPtr2]} />
+                    <Image source={Global.areaInfoPtr} style={[styles.pointers, styles.infoPtr2]} />
                 </TouchableWithoutFeedback>
                 <TouchableWithoutFeedback onPress={()=>showInfo(3)}>
-                    <Image source={Global.propertyInfoPtr} style={[styles.pointers, styles.infoPtr3]} />
+                    <Image source={Global.areaInfoPtr} style={[styles.pointers, styles.infoPtr3]} />
                 </TouchableWithoutFeedback>
                 <TouchableWithoutFeedback onPress={()=>showInfo(4)}>
-                    <Image source={Global.propertyInfoPtr} style={[styles.pointers, styles.infoPtr4]} />
+                    <Image source={Global.areaInfoPtr} style={[styles.pointers, styles.infoPtr4]} />
                 </TouchableWithoutFeedback>
 
-                
+                <TouchableWithoutFeedback onPress={()=>showPropertyInfo(1)}>
+                    <Image source={Global.locationPtr1} style={[styles.pointers, styles.locationPtr1]} />
+                </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback onPress={()=>showPropertyInfo(2)}>
+                    <Image source={Global.locationPtr2} style={[styles.pointers, styles.locationPtr2]} />
+                </TouchableWithoutFeedback>
+                <TouchableWithoutFeedback onPress={()=>showPropertyInfo(3)}>
+                    <Image source={Global.locationPtr3} style={[styles.pointers, styles.locationPtr3]} />
+                </TouchableWithoutFeedback>
+
+                {showAreaInfo[0] &&
+                <Text style={styles.text}>{msg}</Text>
+                }
             </ImageBackground>
         </View>
     );
@@ -147,6 +161,18 @@ const styles = StyleSheet.create({
     },
     infoPtr4: {
         top: "80%",
+        left: "87%",
+    },
+    locationPtr1: {
+        top: "7%",
+        left: "55%",
+    },
+    locationPtr2: {
+        top: "70%",
+        left: "14%",
+    },
+    locationPtr3: {
+        top: "49%",
         left: "87%",
     },
 });
