@@ -6,7 +6,11 @@ import Global from '../global';
 const IntroScreen = () => {  
     const [msg, setMsg] = useState(Global.welcomeMsg);
     const [infi, setInfi] = useState(Global.handsUpImg);
+    const [seasonIcon, setSeasonIcon] = useState(Global.winterIcon);
     const [pointer, setPointer] = useState(false);
+    const [nextBtn, setNextBtn] = useState(false);
+    const [infoFontSize, setInfoFontSize] = useState(20);
+    const [bgImg, setBgImg] = useState(Global.cityImg);
     const navigation = useNavigation();
 
     const changeMsg = () => {   
@@ -18,30 +22,48 @@ const IntroScreen = () => {
             setPointer(true);
         } else if (msg == Global.introMsg2) {   
             setMsg(Global.introMsg3);
-        } else {
-            navigation.navigate('ReadyStart');
+            setPointer(false);
+            setNextBtn(true);
+            setInfi(Global.handsUpImg);
+        } else if (msg == Global.introMsg4) {
+            navigation.navigate('MainMap');
         }
     }
 
-    const showGraph = () => {   
-
+    const readyStart = () => {  
+        setMsg(Global.introMsg4);
+        setNextBtn(false);
+        setInfoFontSize(16);
+        setBgImg(Global.cityPropertiesImg);
     }
 
     return (
         <TouchableWithoutFeedback onPress={changeMsg}>
             <View style={styles.container}>
-                <ImageBackground source={Global.cityImg} resizeMode="stretch" style={styles.citybg}>
+                <ImageBackground source={bgImg} resizeMode="stretch" style={styles.citybg}>
                     <View style={styles.header}>
                         <View style={styles.amountBox}>
-                            <Text style={styles.amount}>$0.00</Text>
+                            <Text style={styles.amount}>Jan</Text>
+                            <Image source={seasonIcon} style={styles.seasonIcon}/>
+                            <Text style={styles.amount}>£200,000</Text>
                         </View>
-                        <TouchableHighlight onPress={showGraph} style={styles.graphButton} underlayColor='green'>
+                        <TouchableHighlight style={styles.graphButton} underlayColor='green'>
                             <Image source={Global.graphIcon} style={styles.graphIcon} />
                         </TouchableHighlight>
                     </View>
+                    {pointer && 
+                    <Image source={Global.pointerImg} style={styles.pointer} /> 
+                    }
                     <View style={styles.body}>
                         <Image source={infi} style={styles.infi} />
-                        <Text style={styles.text}>{msg}</Text>
+                        <View style={styles.textContainer}>
+                            <Text style={[styles.text, {fontSize: infoFontSize}]}>{msg}</Text>
+                            {nextBtn && 
+                            <TouchableHighlight style={styles.nextButton} onPress={readyStart} underlayColor='green'>
+                                <Text style={styles.buttonText}>Next</Text>
+                            </TouchableHighlight>
+                            }
+                        </View>
                     </View>
                 </ImageBackground>
             </View>
@@ -56,18 +78,17 @@ const styles = StyleSheet.create({
     citybg: {
         flex: 1,
         alignItems: "center",
-        paddingHorizontal: '3%',
+        paddingHorizontal: '2%',
     },
     header: {
         width: '100%',
-        height: '16%',
+        height: '14%',
         flexDirection: 'row',
         justifyContent: 'flex-end',
         alignItems: 'center',
-        backgroundColor: 'blue',
     },
     graphButton: {
-        width: "9%",
+        width: "8%",
         height: "90%",
         borderRadius: 10,
         backgroundColor: 'white',
@@ -80,19 +101,33 @@ const styles = StyleSheet.create({
     },
     amountBox: {
         width: "20%",
-        height: "90%",
+        height: "80%",
         backgroundColor: 'white',
         borderRadius: 10,
+        flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         marginRight: '1%',
+    },
+    seasonIcon: {
+        width: "20%",
+        height: "60%",
+        resizeMode: 'contain',
+    },
+    pointer: {
+        width: "5%",
+        height: "15%",
+        resizeMode: 'contain',
+        position: 'absolute',
+        top: '11%',
+        left: '95%',
     },
     body: {
         width: "100%",
         height: "80%",
         flexDirection: "row",
         justifyContent: "center", 
-        alignItems: "center",
+        alignItems: "flex-start",
         padding: '5%',
     },
     infi: {
@@ -100,15 +135,29 @@ const styles = StyleSheet.create({
         height: "100%",
         resizeMode: "contain",
     },
+    textContainer: {
+        width: "60%",
+    },
     text: {
         color: "black",
-        fontSize: 20,
         textAlign: "center",
         backgroundColor: "white",
-        width: "60%",
         padding: 10,
         borderColor: "black",
         borderWidth: 3,
+    },
+    nextButton: {
+        width: '50%',
+        backgroundColor: '#3d62fa',
+        borderRadius: 10,
+        padding: 10,
+        alignItems: 'center',
+        alignSelf: 'center',
+        marginTop: '5%',
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 20,
     }
 });
 
