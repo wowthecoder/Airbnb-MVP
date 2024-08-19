@@ -1,4 +1,5 @@
-module.exports = {  
+module.exports = {
+    userid: "",  
     welcomeMsg: "Welcome to Airbnb Empire, future landlords! I am Infi, your AI advisor. You can click on my office for hints if you need help during the game.",
     introMsg1: "I am providing you with an investment of £200K to invest in properties with the aim to convert them into AirBnBs. I want you to achieve a net rental yield of 8% by the end of the year.",
     introMsg2: "In order to meet this goal, you will need to invest wisely to ensure good rental income, positive net cash flow and an increase in property value over one year. You can track your performance by clicking on the button above.",
