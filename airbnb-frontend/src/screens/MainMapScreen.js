@@ -103,7 +103,18 @@ const MainMapScreen = () => {
     }
 
     const buyProperty = ( number ) => {
-        console.log("Property bought!");
+        navigation.navigate('FinanceOptions');
+        // switch (number) {
+        //     case 1:
+        //         Global.money -= data.properties[0].price;
+        //         break;
+        //     case 2:
+        //         Global.money -= data.properties[1].price;
+        //         break;
+        //     case 3:
+        //         Global.money -= data.properties[2].price;
+        //         break;
+        // }
     }
 
     return (

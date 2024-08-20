@@ -33,7 +33,7 @@ const GraphScreen = () => {
             <ScrollView showsVerticalScrollIndicator={true} style={styles.container}>
                 <Text style={styles.graphTitle}>Property values over time</Text>
                 <View style={styles.chartContainer}>
-                    <Text style={styles.yAxisLabel}>Amount (£)</Text>
+                    <Text style={[styles.yAxisLabel, styles.propYAxisLabel]}>Property Value (£)</Text>
                     <LineChart
                         data={{
                         labels: months,
@@ -109,7 +109,7 @@ const GraphScreen = () => {
 
                 <Text style={styles.graphTitle}>Monthly Rental Income and Net Cash Flow</Text>
                 <View style={styles.chartContainer}>
-                    <Text style={styles.yAxisLabel}>Amount (£)</Text>
+                    <Text style={[styles.yAxisLabel, styles.cashYAxisLabel]}>Amount (£)</Text>
                     <LineChart
                         data={{
                         labels: months,
@@ -213,10 +213,15 @@ const styles = StyleSheet.create({
     yAxisLabel: {
         position: 'absolute',
         top: "40%",
-        left: "2%",
         fontSize: 14,
         transform: [{ rotate: '-90deg' }], // Rotate the text to be vertical
         textAlign: 'center',
+    },
+    propYAxisLabel: {
+        left: "-2%",
+    },
+    cashYAxisLabel: {
+        left: "2%",
     },
     legendContainer: {
         backgroundColor: 'white',

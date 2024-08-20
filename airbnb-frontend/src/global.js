@@ -28,4 +28,7 @@ module.exports = {
     locationPtr1: require('../assets/pointers/location1ptr.png'),
     locationPtr2: require('../assets/pointers/location2ptr.png'),
     locationPtr3: require('../assets/pointers/location3ptr.png'),
+    boughtPropertyBg: require('../assets/boughtPropertyBg.jpeg'),
+    financeOptionsBg: require('../assets/financeOptionBg.jpeg'),
+    insuranceOptionsBg: require('../assets/insuranceOptionBg.png'),
 } 
