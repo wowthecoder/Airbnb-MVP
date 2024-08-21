@@ -14,6 +14,7 @@ module.exports = {
     testVideoSource: 'https://gdurl.com/PjVU',
     handsUpImg : require('../assets/Infi/Hands up in the air.png'),
     pointingImg: require('../assets/Infi/Pointing.png'),
+    smirkingImg: require('../assets/Infi/Smirking.png'),
     cityImg: require('../assets/city.jpg'),
     cityBannerImg: require('../assets/city-with-banner.png'),
     cityPropertiesImg: require('../assets/city-with-properties.png'),
