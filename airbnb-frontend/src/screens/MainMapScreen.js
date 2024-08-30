@@ -13,14 +13,21 @@ const MainMapScreen = () => {
     const [seasonIcon, setSeasonIcon] = useState(Global.winterIcon);
     const [showAreaInfo, setShowAreaInfo] = useState(Array(numAreas).fill(false));
     const [showPropertyInfo, setShowPropertyInfo] = useState(Array(numProperties).fill(""));
+    const [hint, setHint] = useState("");
+    const [propertyButtonText, setPropertyButtonText] = useState("Pay");
+    const [showRentalSlider, setShowRentalSlider] = useState(false);
     const navigation = useNavigation();
 
     const getGraphs = () => {
         navigation.navigate('Graph');
     }
 
-    const getHints = () => {
-        navigation.navigate('Hints');
+    const getHints = (toggle) => {
+        if (toggle) {
+            setHint("Remember that you can choose many options to finance your property investment.");
+        } else {
+            setHint("");
+        }
     }
 
     const showArea = ( number ) => {
@@ -60,14 +67,26 @@ const MainMapScreen = () => {
         };
     }
 
-    const fillText = ( price, numHotels, hotelFee, renovationCost, note ) => {  
-        return `Price: £${price}\n`
+    const checkPropertyOwned = ( number ) => {
+        return number % 2 == 0;
+     }
+
+    const fillText = ( owned, price, numHotels, hotelFee, renovationCost, note ) => {  
+        let res = `Price: £${price}\n`
         + `Number of surrounding AirBnBs and hotels: ${numHotels} (Average £${hotelFee} per night)\n`
-        + `Estimated renovation cost to meet AirBnB standards: £${renovationCost}\n`
-        + `Note: ${note}`;
+        if (!owned) {
+            res += `Estimated renovation cost to meet AirBnB standards: £${renovationCost}\n`;
+        }
+        res += `Note: ${note}`;
+        return res;
+    }
+
+    const setPropertyBtnTxt = ( owned ) => {
+        setPropertyButtonText(owned ? "Change Rental Price" : "Pay");
     }
 
     const showProperty = ( number ) => {
+        let owned = checkPropertyOwned(number);
         switch (number) { 
             case 1:
                 if (showPropertyInfo[0] !== "") {
@@ -75,7 +94,8 @@ const MainMapScreen = () => {
                 }
                 else {
                     let prop = data.properties[0];
-                    let info = fillText(prop.price, prop["surrounding_hotels"], prop["avg_hotel_fee"], prop["renovation_costs"], prop["note"]);
+                    let info = fillText(owned, prop.price, prop["surrounding_hotels"], prop["avg_hotel_fee"], prop["renovation_costs"], prop["note"]);
+                    setPropertyBtnTxt(owned);
                     setShowPropertyInfo([info, "", ""]);
                 }
                 break;
@@ -85,7 +105,8 @@ const MainMapScreen = () => {
                 }
                 else {
                     let prop = data.properties[1];
-                    let info = fillText(prop.price, prop["surrounding_hotels"], prop["avg_hotel_fee"], prop["renovation_costs"], prop["note"]);
+                    let info = fillText(owned, prop.price, prop["surrounding_hotels"], prop["avg_hotel_fee"], prop["renovation_costs"], prop["note"]);
+                    setPropertyBtnTxt(owned);
                     setShowPropertyInfo(["", info, ""]);
                 }
                 break;
@@ -95,11 +116,16 @@ const MainMapScreen = () => {
                 }
                 else {
                     let prop = data.properties[2];
-                    let info = fillText(prop.price, prop["surrounding_hotels"], prop["avg_hotel_fee"], prop["renovation_costs"], prop["note"]);
+                    let info = fillText(owned, prop.price, prop["surrounding_hotels"], prop["avg_hotel_fee"], prop["renovation_costs"], prop["note"]);
+                    setPropertyBtnTxt(owned);
                     setShowPropertyInfo(["", "", info]);
                 }
                 break;
         };
+    }
+
+    const changeRentalPrice = ( number ) => {
+        console.log("Change rental price");
     }
 
     const buyProperty = ( number ) => {
@@ -117,6 +143,14 @@ const MainMapScreen = () => {
         // }
     }
 
+    const buyOrChangeRental = ( number ) => {
+        if (checkPropertyOwned(number)) {
+            changeRentalPrice(number);
+        } else {
+            buyProperty(number);
+        }
+    }
+
     return (
         <View style={styles.container}>
             <ImageBackground source={Global.cityImg} resizeMode="stretch" style={styles.citybg}>
@@ -131,7 +165,7 @@ const MainMapScreen = () => {
                     </TouchableHighlight>
                 </View>
 
-                <TouchableWithoutFeedback onPress={getHints}>
+                <TouchableWithoutFeedback onPress={() => getHints(true)}>
                     <Image source={Global.infiHQptr} style={[styles.pointers, styles.infiHQ]} />
                 </TouchableWithoutFeedback>
                 <TouchableWithoutFeedback onPress={()=>showArea(1)}>
@@ -174,7 +208,7 @@ const MainMapScreen = () => {
                 <View style={[styles.propInfoContainer, styles.propDesc1]}>
                     <Text style={styles.propText}>{showPropertyInfo[0]}</Text>
                     <TouchableHighlight style={styles.payButton} onPress={() => buyProperty(1)} underlayColor='green'>
-                        <Text style={styles.payText}>Pay</Text>
+                        <Text style={styles.payText}>{propertyButtonText}</Text>
                     </TouchableHighlight>
                 </View>
                 }
@@ -182,7 +216,7 @@ const MainMapScreen = () => {
                 <View style={[styles.propInfoContainer, styles.propDesc2]}>
                     <Text style={styles.propText}>{showPropertyInfo[1]}</Text>
                     <TouchableHighlight style={styles.payButton} onPress={() => buyProperty(2)} underlayColor='green'>
-                        <Text style={styles.payText}>Pay</Text>
+                        <Text style={styles.payText}>{propertyButtonText}</Text>
                     </TouchableHighlight>
                 </View>
                 }
@@ -190,9 +224,18 @@ const MainMapScreen = () => {
                 <View style={[styles.propInfoContainer, styles.propDesc3]}>
                     <Text style={styles.propText}>{showPropertyInfo[2]}</Text>
                     <TouchableHighlight style={styles.payButton} onPress={() => buyProperty(3)} underlayColor='green'>
-                        <Text style={styles.payText}>Pay</Text>
+                        <Text style={styles.payText}>{propertyButtonText}</Text>
                     </TouchableHighlight>
                 </View>
+                }
+
+                {hint !== "" &&
+                <TouchableWithoutFeedback onPress={() => getHints(false)}>
+                    <View style={styles.hintBox}>
+                        <Text style={[styles.hint, { fontWeight: "bold" }]}>Hint:</Text>
+                        <Text style={styles.hint}>{hint}</Text>
+                    </View>
+                </TouchableWithoutFeedback>
                 }
             </ImageBackground>
         </View>
@@ -205,9 +248,7 @@ const styles = StyleSheet.create({
     },
     citybg: {
         flex: 1,
-        flexDirection: "row",
-        justifyContent: "center", 
-        alignItems: "flex-start",
+        justifyContent: "flex-start", 
         paddingHorizontal: '2%',
     },
     header: {
@@ -342,14 +383,28 @@ const styles = StyleSheet.create({
         backgroundColor: 'royalblue',
         padding: 10,
         borderRadius: 10,
-        width: '40%',
+        minWidth: '40%',
+        maxWidth: '90%',
         marginTop: 5,
     },
     payText: {
         color: 'white',
         fontSize: 18,
         textAlign: 'center',
-    }
+    },
+    hintBox: {
+        width: "60%",
+        // height: "40%",
+        backgroundColor: "white",
+        padding: 10,
+        borderRadius: 10,
+        alignSelf: "center",
+        marginTop: "5%",
+    }, 
+    hint: {
+        fontSize: 20,
+        textAlign: "center",
+    },
 });
 
 export default MainMapScreen;

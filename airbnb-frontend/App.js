@@ -8,7 +8,6 @@ import MenuScreen from './src/screens/MenuScreen';
 import MainMapScreen from './src/screens/MainMapScreen';
 import VideoScreen from './src/screens/VideoScreen';
 import GraphScreen from './src/screens/GraphScreen';
-import HintsScreen from './src/screens/HintsScreen';
 import FinanceOptions from './src/screens/FinanceOptionsScreen';
 import InsuranceOptions from './src/screens/InsuranceOptionsScreen';
 import BoughtProperty from './src/screens/BoughtPropertyScreen';
@@ -23,8 +22,7 @@ const Navigator = () => {
           <Stack.Screen name="Intro" component={IntroScreen} options={{ headerShown: false }} />
           <Stack.Screen name="MainMap" component={MainMapScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Video" component={VideoScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="Graph" component={GraphScreen} options={{ headerShown: false }} />  
-          <Stack.Screen name="Hints" component={HintsScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Graph" component={GraphScreen} options={{ headerShown: false }} /> 
           <Stack.Screen name="FinanceOptions" component={FinanceOptions} options={{ headerShown: false }} />
           <Stack.Screen name="InsuranceOptions" component={InsuranceOptions} options={{ headerShown: false }} />
           <Stack.Screen name="BoughtProperty" component={BoughtProperty} options={{ headerShown: false }} />
