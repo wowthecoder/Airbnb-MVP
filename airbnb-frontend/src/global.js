@@ -11,6 +11,9 @@ module.exports = {
     boughtPropertyMsg: "Congratulations on the new place! Let me know when you need help finding the kitchen in that mansion of yours.",
     gameSuccessMsg: "Congratulations! You achieved a rental yield of above 8%! Before accessing your personalised feedback report, let's watch this debriefing video by ?.",
     gameFailMsg: "You did not meet the goal of an 8% rental yield. Before accessing your personalised feedback report, let's watch this debriefing video by ?. Hopefully, you can learn from your mistakes and do better next time.",
+    springMsg: "It's spring! Time for nature to hit the refresh button... and for my allergies to remind me they're still in charge!",
+    summerMsg: "It's summer! When the sun's out, and so are my excuses for skipping the gym.",
+    autumnMsg: "It's autumn! The only season where you can lose your keys in a pile of leaves.",
     testVideoSource: 'https://gdurl.com/PjVU',
     handsUpImg : require('../assets/Infi/Hands up in the air.png'),
     pointingImg: require('../assets/Infi/Pointing.png'),
@@ -32,4 +35,7 @@ module.exports = {
     boughtPropertyBg: require('../assets/boughtPropertyBg.jpeg'),
     financeOptionsBg: require('../assets/financeOptionBg.jpeg'),
     insuranceOptionsBg: require('../assets/insuranceOptionBg.png'),
+    springBg: require('../assets/springbg.png'),
+    summerBg: require('../assets/summerbg.png'),
+    autumnBg: require('../assets/autumnbg.png'),
 } 
