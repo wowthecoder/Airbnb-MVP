@@ -85,5 +85,18 @@
             "description": "",
             "annual_fee": 0
         }
-    ]
+    ],
+    "random_events": {
+        "March": [
+            {
+                "title": "Water Leakage",
+                "description": "One of your tenants complained of a leak, which was discovered to come from a broken pipe.",
+                "NoInsurance": "As you did not opt for any insurance, you need to pay ",
+                "endSentence": "",
+                "bothInsurance": "Thankfully, the damages are covered by the buildings and contents insurance you bought."
+            }
+        ],
+        "July": [],
+        "Nov": []
+    }
 }

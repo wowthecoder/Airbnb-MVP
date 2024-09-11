@@ -1,4 +1,7 @@
 import { StyleSheet, View, ImageBackground, Image, Text, TouchableHighlight, TouchableWithoutFeedback } from "react-native";
+import LocationDescText from "../components/LocationDescText";
+import PointerButton from "../components/PointerButton";
+import PropertyInfoBox from "../components/PropertyInfoBox";
 import { useState } from 'react';
 import { useNavigation } from "@react-navigation/native";
 import Global from '../global';
@@ -8,14 +11,14 @@ const numAreas = 4;
 const numProperties = 3;
 
 const MainMapScreen = () => {  
-    const [msg, setMsg] = useState(Global.welcomeMsg);
-    const [infi, setInfi] = useState(Global.handsUpImg);
     const [seasonIcon, setSeasonIcon] = useState(Global.winterIcon);
     const [showAreaInfo, setShowAreaInfo] = useState(Array(numAreas).fill(false));
     const [showPropertyInfo, setShowPropertyInfo] = useState(Array(numProperties).fill(""));
     const [hint, setHint] = useState("");
     const [propertyButtonText, setPropertyButtonText] = useState("Pay");
     const [showRentalSlider, setShowRentalSlider] = useState(false);
+    const [rentalPrice, setRentalPrice] = useState(100);
+    const [showEvent, setShowEvent] = useState(false);
     const navigation = useNavigation();
 
     const getGraphs = () => {
@@ -67,9 +70,15 @@ const MainMapScreen = () => {
         };
     }
 
+    // Connect to db later
     const checkPropertyOwned = ( number ) => {
-        return number % 2 == 0;
-     }
+        return number > 1;
+    }
+
+    const getRentalPrice = ( number ) => {
+        console.log(`Getting rental price for house ${number}`);
+        return 100;
+    }
 
     const fillText = ( owned, price, numHotels, hotelFee, renovationCost, note ) => {  
         let res = `Price: £${price}\n`
@@ -124,8 +133,8 @@ const MainMapScreen = () => {
         };
     }
 
-    const changeRentalPrice = ( number ) => {
-        console.log("Change rental price");
+    const changeRentalPrice = (houseNum, amount) => {
+        console.log(`Changed rental price for house ${houseNum} to £${amount}`);
     }
 
     const buyProperty = ( number ) => {
@@ -145,7 +154,15 @@ const MainMapScreen = () => {
 
     const buyOrChangeRental = ( number ) => {
         if (checkPropertyOwned(number)) {
-            changeRentalPrice(number);
+            if (propertyButtonText === "Change Rental Price") { // display rental price
+                setRentalPrice(getRentalPrice(number));
+                setShowRentalSlider(true);
+                setPropertyButtonText("Confirm")
+            } else {
+                changeRentalPrice(number, rentalPrice);
+                setShowRentalSlider(false);
+                setPropertyButtonText("Change Rental Price");
+            }
         } else {
             buyProperty(number);
         }
@@ -165,68 +182,70 @@ const MainMapScreen = () => {
                     </TouchableHighlight>
                 </View>
 
-                <TouchableWithoutFeedback onPress={() => getHints(true)}>
-                    <Image source={Global.infiHQptr} style={[styles.pointers, styles.infiHQ]} />
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={()=>showArea(1)}>
-                    <Image source={Global.areaInfoPtr} style={[styles.pointers, styles.infoPtr1]} />
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={()=>showArea(2)}>
-                    <Image source={Global.areaInfoPtr} style={[styles.pointers, styles.infoPtr2]} />
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={()=>showArea(3)}>
-                    <Image source={Global.areaInfoPtr} style={[styles.pointers, styles.infoPtr3]} />
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={()=>showArea(4)}>
-                    <Image source={Global.areaInfoPtr} style={[styles.pointers, styles.infoPtr4]} />
-                </TouchableWithoutFeedback>
+                <PointerButton onPress={() => getHints(true)} imgSrc={Global.infiHQptr} locationOnScreen={styles.infiHQ} />
 
-                <TouchableWithoutFeedback onPress={()=>showProperty(1)}>
-                    <Image source={Global.locationPtr1} style={[styles.pointers, styles.locationPtr1]} />
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={()=>showProperty(2)}>
-                    <Image source={Global.locationPtr2} style={[styles.pointers, styles.locationPtr2]} />
-                </TouchableWithoutFeedback>
-                <TouchableWithoutFeedback onPress={()=>showProperty(3)}>
-                    <Image source={Global.locationPtr3} style={[styles.pointers, styles.locationPtr3]} />
-                </TouchableWithoutFeedback>
+                <PointerButton onPress={() => showArea(1)} imgSrc={Global.areaInfoPtr} locationOnScreen={styles.infoPtr1} />
+
+                <PointerButton onPress={() => showArea(2)} imgSrc={Global.areaInfoPtr} locationOnScreen={styles.infoPtr2} />
+
+                <PointerButton onPress={() => showArea(3)} imgSrc={Global.areaInfoPtr} locationOnScreen={styles.infoPtr3} />
+
+                <PointerButton onPress={() => showArea(4)} imgSrc={Global.areaInfoPtr} locationOnScreen={styles.infoPtr4} />
+
+                <PointerButton onPress={() => showProperty(1)} imgSrc={Global.locationPtr1} locationOnScreen={styles.locationPtr1} />
+
+                <PointerButton onPress={() => showProperty(2)} imgSrc={Global.locationPtr2} locationOnScreen={styles.locationPtr2} />
+
+                <PointerButton onPress={() => showProperty(3)} imgSrc={Global.locationPtr3} locationOnScreen={styles.locationPtr3} />
 
                 {showAreaInfo[0] &&
-                <Text adjustsFontSizeToFit numberOfLines={3} style={[styles.locationText, styles.locationDesc1]}>{data.areas[0].description}</Text>
+                <LocationDescText numOfLines={3} description={data.areas[0].description} positionOnScreen={styles.locationDesc1} />
                 }
                 {showAreaInfo[1] &&
-                <Text adjustsFontSizeToFit numberOfLines={2} style={[styles.locationText, styles.locationDesc2]}>{data.areas[1].description}</Text>
+                <LocationDescText numOfLines={3} description={data.areas[1].description} positionOnScreen={styles.locationDesc2} />
                 }
                 {showAreaInfo[2] &&
-                <Text adjustsFontSizeToFit numberOfLines={2} style={[styles.locationText, styles.locationDesc3]}>{data.areas[2].description}</Text>
+                <LocationDescText numOfLines={3} description={data.areas[2].description} positionOnScreen={styles.locationDesc3} />
                 }
                 {showAreaInfo[3] &&
-                <Text adjustsFontSizeToFit numberOfLines={2} style={[styles.locationText, styles.locationDesc4]}>{data.areas[3].description}</Text>
+                <LocationDescText numOfLines={2} description={data.areas[3].description} positionOnScreen={styles.locationDesc4} />
                 }
 
                 {showPropertyInfo[0] !== "" &&
-                <View style={[styles.propInfoContainer, styles.propDesc1]}>
-                    <Text style={styles.propText}>{showPropertyInfo[0]}</Text>
-                    <TouchableHighlight style={styles.payButton} onPress={() => buyProperty(1)} underlayColor='green'>
-                        <Text style={styles.payText}>{propertyButtonText}</Text>
-                    </TouchableHighlight>
-                </View>
+                <PropertyInfoBox 
+                    locationOnScreen={styles.propDesc1} 
+                    infoText={showPropertyInfo[0]} 
+                    onButtonPress={() => buyOrChangeRental(1)} 
+                    buttonText={propertyButtonText} 
+                    propertyOwned={checkPropertyOwned(1)}
+                    showSlider={showRentalSlider} 
+                    rentalPrice={rentalPrice}
+                    setRentalPrice={setRentalPrice}
+                />
                 }
                 {showPropertyInfo[1] !== "" &&
-                <View style={[styles.propInfoContainer, styles.propDesc2]}>
-                    <Text style={styles.propText}>{showPropertyInfo[1]}</Text>
-                    <TouchableHighlight style={styles.payButton} onPress={() => buyProperty(2)} underlayColor='green'>
-                        <Text style={styles.payText}>{propertyButtonText}</Text>
-                    </TouchableHighlight>
-                </View>
+                <PropertyInfoBox 
+                    locationOnScreen={styles.propDesc2} 
+                    infoText={showPropertyInfo[1]} 
+                    onButtonPress={() => buyOrChangeRental(2)} 
+                    buttonText={propertyButtonText} 
+                    propertyOwned={checkPropertyOwned(2)}
+                    showSlider={showRentalSlider} 
+                    rentalPrice={rentalPrice}
+                    setRentalPrice={setRentalPrice}
+                />
                 }
                 {showPropertyInfo[2] !== "" &&
-                <View style={[styles.propInfoContainer, styles.propDesc3]}>
-                    <Text style={styles.propText}>{showPropertyInfo[2]}</Text>
-                    <TouchableHighlight style={styles.payButton} onPress={() => buyProperty(3)} underlayColor='green'>
-                        <Text style={styles.payText}>{propertyButtonText}</Text>
-                    </TouchableHighlight>
-                </View>
+                <PropertyInfoBox 
+                    locationOnScreen={styles.propDesc3} 
+                    infoText={showPropertyInfo[2]} 
+                    onButtonPress={() => buyOrChangeRental(3)} 
+                    buttonText={propertyButtonText}
+                    propertyOwned={checkPropertyOwned(2)} 
+                    showSlider={showRentalSlider} 
+                    rentalPrice={rentalPrice}
+                    setRentalPrice={setRentalPrice}
+                />
                 }
 
                 {hint !== "" &&
@@ -285,12 +304,6 @@ const styles = StyleSheet.create({
         height: "60%",
         resizeMode: 'contain',
     },
-    pointers: {
-        position: 'absolute',
-        width: "8%",
-        height: "15%",
-        resizeMode: 'contain',
-    },
     infiHQ: {
         top: "55%",
         left: "55%",
@@ -326,18 +339,6 @@ const styles = StyleSheet.create({
         top: "49%",
         left: "87%",
     },
-    locationText: {
-        color: "black",
-        textAlign: "center",
-        backgroundColor: "white",
-        paddingHorizontal: 10,
-        paddingVertical: 5,
-        borderColor: "black",
-        borderWidth: 3,
-        position: "absolute",
-        maxHeight: "20%",
-        width: "40%",
-    },
     locationDesc1: {
         top: "5%",
         left: "10%",
@@ -354,19 +355,6 @@ const styles = StyleSheet.create({
         top: "80%",
         left: "47%",
     },
-    propInfoContainer: {    
-        position: "absolute",
-        backgroundColor: "white",
-        borderColor: "black",
-        borderWidth: 3,
-        alignItems: "center",
-        padding: 10,
-        width: "40%",
-        maxHeight: "70%",
-    },
-    propText: {
-        textAlign: "left",
-    }, 
     propDesc1: {
         top: "5%",
         left: "15%",
@@ -378,19 +366,6 @@ const styles = StyleSheet.create({
     propDesc3: {
         top: "20%",
         left: "46%",
-    },
-    payButton: {
-        backgroundColor: 'royalblue',
-        padding: 10,
-        borderRadius: 10,
-        minWidth: '40%',
-        maxWidth: '90%',
-        marginTop: 5,
-    },
-    payText: {
-        color: 'white',
-        fontSize: 18,
-        textAlign: 'center',
     },
     hintBox: {
         width: "60%",
