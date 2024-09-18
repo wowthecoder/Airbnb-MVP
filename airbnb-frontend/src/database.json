@@ -35,7 +35,7 @@
             "note": "40 min bus ride to city center, 5 min walk to shops and restaurants"
         },
         {
-            "id": 1,
+            "id": 3,
             "price": 150000,
             "surrounding_hotels": 120,
             "avg_hotel_fee": 80,
@@ -65,7 +65,7 @@
             "id": 1,
             "title": "Buildings Insurance",
             "description": "Protects the structure of your home (walls, roof) and permanent fixtures (kitchen).",
-            "annual_fee": 298
+            "annual_fee": 300
         },
         {
             "id": 2,

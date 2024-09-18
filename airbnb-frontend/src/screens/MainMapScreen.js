@@ -2,8 +2,9 @@ import { StyleSheet, View, ImageBackground, Image, Text, TouchableHighlight, Tou
 import LocationDescText from "../components/LocationDescText";
 import PointerButton from "../components/PointerButton";
 import PropertyInfoBox from "../components/PropertyInfoBox";
-import { useState } from 'react';
-import { useNavigation } from "@react-navigation/native";
+import { useState, useCallback } from 'react';
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import { getAreas } from "../backendFuncs";
 import Global from '../global';
 import data from '../database.json';
 
@@ -13,6 +14,7 @@ const numProperties = 3;
 const MainMapScreen = () => {  
     const [seasonIcon, setSeasonIcon] = useState(Global.winterIcon);
     const [showAreaInfo, setShowAreaInfo] = useState(Array(numAreas).fill(false));
+    const [areaDesc, setAreaDesc] = useState(Array(numAreas).fill("haha"));
     const [showPropertyInfo, setShowPropertyInfo] = useState(Array(numProperties).fill(""));
     const [hint, setHint] = useState("");
     const [propertyButtonText, setPropertyButtonText] = useState("Pay");
@@ -20,6 +22,12 @@ const MainMapScreen = () => {
     const [rentalPrice, setRentalPrice] = useState(100);
     const [showEvent, setShowEvent] = useState(false);
     const navigation = useNavigation();
+    
+    useFocusEffect(
+        useCallback(() => {
+            getAreas(setAreaDesc);
+        }, [])
+    );
 
     const getGraphs = () => {
         navigation.navigate('Graph');
@@ -34,40 +42,14 @@ const MainMapScreen = () => {
     }
 
     const showArea = ( number ) => {
-        switch (number) { 
-            case 1:
-                if (showAreaInfo[0]) {
-                    setShowAreaInfo(Array(numAreas).fill(false));
-                }
-                else {
-                    setShowAreaInfo([true, false, false, false]);
-                }
-                break;
-            case 2:
-                if (showAreaInfo[1]) {
-                    setShowAreaInfo(Array(numAreas).fill(false));
-                }
-                else {
-                    setShowAreaInfo([false, true, false, false]);
-                }
-                break;
-            case 3:
-                if (showAreaInfo[2]) {
-                    setShowAreaInfo(Array(numAreas).fill(false));
-                }
-                else {
-                    setShowAreaInfo([false, false, true, false]);
-                }
-                break;
-            case 4:
-                if (showAreaInfo[3]) {
-                    setShowAreaInfo(Array(numAreas).fill(false));
-                }
-                else {
-                    setShowAreaInfo([false, false, false, true]);
-                }
-                break;
-        };
+        arr = Array(numAreas).fill(false);
+        if (showAreaInfo[number - 1]) {
+            setShowAreaInfo(arr);
+        }
+        else {
+            arr[number - 1] = true;
+            setShowAreaInfo(arr);
+        }
     }
 
     // Connect to db later
@@ -199,16 +181,16 @@ const MainMapScreen = () => {
                 <PointerButton onPress={() => showProperty(3)} imgSrc={Global.locationPtr3} locationOnScreen={styles.locationPtr3} />
 
                 {showAreaInfo[0] &&
-                <LocationDescText numOfLines={3} description={data.areas[0].description} positionOnScreen={styles.locationDesc1} />
+                <LocationDescText numOfLines={3} description={areaDesc[0]} positionOnScreen={styles.locationDesc1} />
                 }
                 {showAreaInfo[1] &&
-                <LocationDescText numOfLines={3} description={data.areas[1].description} positionOnScreen={styles.locationDesc2} />
+                <LocationDescText numOfLines={3} description={areaDesc[1]} positionOnScreen={styles.locationDesc2} />
                 }
                 {showAreaInfo[2] &&
-                <LocationDescText numOfLines={3} description={data.areas[2].description} positionOnScreen={styles.locationDesc3} />
+                <LocationDescText numOfLines={3} description={areaDesc[2]} positionOnScreen={styles.locationDesc3} />
                 }
                 {showAreaInfo[3] &&
-                <LocationDescText numOfLines={2} description={data.areas[3].description} positionOnScreen={styles.locationDesc4} />
+                <LocationDescText numOfLines={2} description={areaDesc[3]} positionOnScreen={styles.locationDesc4} />
                 }
 
                 {showPropertyInfo[0] !== "" &&

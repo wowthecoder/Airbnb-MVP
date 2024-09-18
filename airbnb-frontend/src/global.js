@@ -14,6 +14,7 @@ module.exports = {
     springMsg: "It's spring! Time for nature to hit the refresh button... and for my allergies to remind me they're still in charge!",
     summerMsg: "It's summer! When the sun's out, and so are my excuses for skipping the gym.",
     autumnMsg: "It's autumn! The only season where you can lose your keys in a pile of leaves.",
+    eventsNoCostMsg: "Thankfully, the damages are covered by the buildings and contents insurance you bought.",
     testVideoSource: 'https://gdurl.com/PjVU',
     handsUpImg : require('../assets/Infi/Hands up in the air.png'),
     pointingImg: require('../assets/Infi/Pointing.png'),
@@ -38,4 +39,6 @@ module.exports = {
     springBg: require('../assets/springbg.png'),
     summerBg: require('../assets/summerbg.png'),
     autumnBg: require('../assets/autumnbg.png'),
+    // backendServerUrl: 'http://172.26.224.23:5000', // for local Flask server
+    backendServerUrl: 'http://10.136.143.3:5000', // for local Flask server
 } 
