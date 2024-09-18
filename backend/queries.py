@@ -58,16 +58,7 @@ def getAreas():
         logging.info(connectToDb())
 
     res = []
-    try:
-        # Establish connection to the PostgreSQL database
-        conn = psycopg.connect(
-            host=db_host,
-            port=db_port,
-            dbname=db_name,
-            user=db_user,
-            password=db_password
-        )
-        
+    try:      
         # Create a cursor object to execute queries
         cursor = conn.cursor()
 
@@ -81,6 +72,150 @@ def getAreas():
         res = cursor.fetchall()
         # Flatten into single list
         res = [r[0] for r in res]
+
+    except Exception as e:
+        logging.error(f"Error fetching from the PostgreSQL database: {e}")
+
+    return res
+
+def getAllProperties():
+    global conn
+    if not conn:
+        logging.info(connectToDb())
+
+    res = []
+    try:      
+        # Create a cursor object to execute queries
+        cursor = conn.cursor()
+
+        # Execute a simple query to check the conn
+        cursor.execute("""
+            SELECT * FROM public.\"Properties\"
+            ORDER BY id ASC
+        """)
+        
+        # Fetch all rows
+        res = cursor.fetchall()
+
+    except Exception as e:
+        logging.error(f"Error fetching from the PostgreSQL database: {e}")
+
+    return res
+
+def getAllUserIds():
+    global conn
+    if not conn:
+        logging.info(connectToDb())
+
+    res = []
+    try:      
+        # Create a cursor object to execute queries
+        cursor = conn.cursor()
+
+        # Execute a simple query to check the conn
+        cursor.execute("""
+            SELECT userid FROM public.\"Users\"
+            ORDER BY userid ASC
+        """)
+        
+        # Fetch all rows
+        res = cursor.fetchall()
+
+    except Exception as e:
+        logging.error(f"Error fetching from the PostgreSQL database: {e}")
+
+    return res
+
+def getUserById(id):
+    global conn
+    if not conn:
+        logging.info(connectToDb())
+
+    res = []
+    try:      
+        # Create a cursor object to execute queries
+        cursor = conn.cursor()
+
+        # Execute a simple query to check the conn
+        cursor.execute(f"""
+            SELECT * FROM public.\"Users\"
+            WHERE userid = {id}
+        """)
+        
+        # Fetch all rows
+        res = cursor.fetchall()
+
+    except Exception as e:
+        logging.error(f"Error fetching from the PostgreSQL database: {e}")
+
+    return res
+
+def getPropertiesOwned(userid):
+    global conn
+    if not conn:
+        logging.info(connectToDb())
+
+    res = []
+    try:      
+        # Create a cursor object to execute queries
+        cursor = conn.cursor()
+
+        # Execute a simple query to check the conn
+        cursor.execute(f"""
+            SELECT * FROM public.\"Properties\"
+            WHERE userid = {userid}
+        """)
+        
+        # Fetch all rows
+        res = cursor.fetchall()
+
+    except Exception as e:
+        logging.error(f"Error fetching from the PostgreSQL database: {e}")
+
+    return res
+
+def getEventsInMonth(month):
+    global conn
+    if not conn:
+        logging.info(connectToDb())
+
+    res = []
+    try:      
+        # Create a cursor object to execute queries
+        cursor = conn.cursor()
+
+        # Execute a simple query to check the conn
+        cursor.execute(f"""
+            SELECT * FROM public.\"Events\"
+            WHERE month = {month}
+        """)
+        
+        # Fetch all rows
+        res = cursor.fetchall()
+
+    except Exception as e:
+        logging.error(f"Error fetching from the PostgreSQL database: {e}")
+
+    return res
+
+def getGraphData(userid):
+    global conn
+    if not conn:
+        logging.info(connectToDb())
+
+    res = []
+    try:      
+        # Create a cursor object to execute queries
+        cursor = conn.cursor()
+
+        # Execute a simple query to check the conn
+        cursor.execute(f"""
+            SELECT * FROM public.\"Financial_records\"
+            WHERE userid = {userid}
+        """)
+        
+        # Fetch all rows
+        res = cursor.fetchall()
 
     except Exception as e:
         logging.error(f"Error fetching from the PostgreSQL database: {e}")
