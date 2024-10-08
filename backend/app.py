@@ -1,6 +1,7 @@
-from flask import Flask, jsonify
-from queries import connectToDb, getAreas, getAllProperties, getAllUserIds, \
-    getUserById, getPropertiesOwned, getEventsInMonth, getGraphData, calcMonthlyStats, buyProperty, setRent
+from flask import Flask, request, jsonify
+from queries import connectToDb, getAreas, getAllProperties, checkUserIdExists, \
+    initUser, getUserById, getPropertiesOwned, getEventsInMonth, getGraphData, \
+    calcMonthlyStats#, buyProperty, setRent
 
 app = Flask(__name__)
 
@@ -16,13 +17,22 @@ def areas():
 def properties():
     return jsonify(getAllProperties())
 
-@app.route('/alluserids')
-def allUserIds():
-    return jsonify(getAllUserIds())
+@app.route('/checkIdExists/<id>')
+def checkIdExists(id):
+    return jsonify(checkUserIdExists(id))
+
+@app.route('/createUser', methods=['POST'])
+def createUser():
+    data = request.get_json()
+    res = initUser(data['userid'])
+    if res == "ok":
+        return jsonify({"message": "User created"}), 200 
+    else:
+        return jsonify({"message": res}), 400
 
 # This returns the user's current month and money
-@app.route('/getUserById/<id>')
-def getUserById(id):
+@app.route('/getUserById/')
+def getUserById():
     return jsonify(getUserById(id))
 
 @app.route('/getPropertiesOwned/<userid>')
@@ -46,14 +56,14 @@ def graphData(userid):
     return jsonify(getGraphData(userid))
 
 # Precondition: The user has enough money to buy the property (not including insurance and deposit)
-@app.route('/buyProperty/<userid>/<propertyid>')
-def buyNewProperty(userid, propertyid):
-    return buyProperty(userid, propertyid)
+# @app.route('/buyProperty/<userid>/<propertyid>')
+# def buyNewProperty(userid, propertyid):
+#     return buyProperty(userid, propertyid)
 
-# Precondition: user owns the property
-@app.route('/setRent/<userid>/<propertyid>/<rent>')
-def setNewRent(userid, propertyid, rent):
-    return setRent(userid, propertyid, rent)
+# # Precondition: user owns the property
+# @app.route('/setRent/<userid>/<propertyid>/<rent>')
+# def setNewRent(userid, propertyid, rent):
+#     return setRent(userid, propertyid, rent)
 
 
 if __name__ == "__main__":

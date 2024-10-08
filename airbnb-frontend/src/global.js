@@ -36,9 +36,10 @@ module.exports = {
     boughtPropertyBg: require('../assets/boughtPropertyBg.jpeg'),
     financeOptionsBg: require('../assets/financeOptionBg.jpeg'),
     insuranceOptionsBg: require('../assets/insuranceOptionBg.png'),
+    nextMonthIcon: require('../assets/fastForward.png'),
     springBg: require('../assets/springbg.png'),
     summerBg: require('../assets/summerbg.png'),
     autumnBg: require('../assets/autumnbg.png'),
-    // backendServerUrl: 'http://172.26.224.23:5000', // for local Flask server
-    backendServerUrl: 'http://10.136.143.3:5000', // for local Flask server
+    // backendServerUrl: 'http://172.26.224.23:5000', // for testing on campus
+    backendServerUrl: 'http://10.136.143.3:5000', // for testing in accom
 } 

@@ -1,12 +1,39 @@
-import { StyleSheet, View, Text, ImageBackground, TouchableHighlight } from "react-native";
+import { StyleSheet, View, Text, ImageBackground, TouchableHighlight, Platform } from "react-native";
+import { useEffect, useState } from "react";
 import { useNavigation } from '@react-navigation/native';   
+import * as Application from 'expo-application';
 import Global from '../global';
+import { checkUserIdExists, createUser } from "../backendFuncs";
 
 const MenuScreen = () => { 
     const navigation = useNavigation();
+    const [nextScreen, setNextScreen] = useState('Intro');
 
+    useEffect(() => {
+        const getDeviceId = async () => {
+            let id = null;
+            if (Platform.OS === 'android') {
+                id = Application.getAndroidId(); // Gets Android-specific ID
+            } else if (Platform.OS === 'ios') {
+                id = await Application.getIosIdForVendorAsync(); // Gets iOS-specific ID
+            }
+            console.log("Device ID:", id);
+            let exists = await checkUserIdExists(id);
+            if (exists) {
+                setNextScreen('MainMap');
+            } else {
+                setNextScreen('Intro');
+                // Initialise player data
+                createUser(id);
+            }
+        };
+    
+        getDeviceId();
+    }, []);
+
+    // If device id exists in table, skip intro
     const startIntro = () => {
-        navigation.navigate('Intro');
+        navigation.navigate(nextScreen);
     }
 
     return (

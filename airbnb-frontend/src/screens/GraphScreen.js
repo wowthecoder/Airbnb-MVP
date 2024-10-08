@@ -2,7 +2,7 @@ import { StyleSheet, Text, ScrollView, View, TouchableHighlight, Dimensions } fr
 import { LineChart } from 'react-native-chart-kit';
 import { useNavigation } from "@react-navigation/native";
 
-const months = ["Dec", "Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov"];
+const months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
 const GraphScreen = () => {   
     const navigation = useNavigation();

@@ -78,41 +78,16 @@ const MainMapScreen = () => {
 
     const showProperty = ( number ) => {
         let owned = checkPropertyOwned(number);
-        switch (number) { 
-            case 1:
-                if (showPropertyInfo[0] !== "") {
-                    setShowPropertyInfo(Array(numProperties).fill(""));
-                }
-                else {
-                    let prop = data.properties[0];
-                    let info = fillText(owned, prop.price, prop["surrounding_hotels"], prop["avg_hotel_fee"], prop["renovation_costs"], prop["note"]);
-                    setPropertyBtnTxt(owned);
-                    setShowPropertyInfo([info, "", ""]);
-                }
-                break;
-            case 2: 
-                if (showPropertyInfo[1] !== "") {   
-                    setShowPropertyInfo(Array(numProperties).fill(""));
-                }
-                else {
-                    let prop = data.properties[1];
-                    let info = fillText(owned, prop.price, prop["surrounding_hotels"], prop["avg_hotel_fee"], prop["renovation_costs"], prop["note"]);
-                    setPropertyBtnTxt(owned);
-                    setShowPropertyInfo(["", info, ""]);
-                }
-                break;
-            case 3:
-                if (showPropertyInfo[2] !== "") {
-                    setShowPropertyInfo(Array(numProperties).fill(""));
-                }
-                else {
-                    let prop = data.properties[2];
-                    let info = fillText(owned, prop.price, prop["surrounding_hotels"], prop["avg_hotel_fee"], prop["renovation_costs"], prop["note"]);
-                    setPropertyBtnTxt(owned);
-                    setShowPropertyInfo(["", "", info]);
-                }
-                break;
-        };
+        if (showPropertyInfo[number - 1] !== "") {
+            setShowPropertyInfo(Array(numProperties).fill(""));
+        } else {
+            let prop = data.properties[number - 1];
+            let info = fillText(owned, prop.price, prop["surrounding_hotels"], prop["avg_hotel_fee"], prop["renovation_costs"], prop["note"]);
+            setPropertyBtnTxt(owned);
+            let arr = Array(numProperties).fill("");
+            arr[number - 1] = info;
+            setShowPropertyInfo(arr);
+        }
     }
 
     const changeRentalPrice = (houseNum, amount) => {
@@ -150,10 +125,19 @@ const MainMapScreen = () => {
         }
     }
 
+    const nextMonth = () => {
+        console.log("Next month");
+    }
+
     return (
         <View style={styles.container}>
             <ImageBackground source={Global.cityImg} resizeMode="stretch" style={styles.citybg}>
                 <View style={styles.header}>
+                    <View style={styles.nextMonthBox}>
+                        <TouchableHighlight style={[styles.graphButton, styles.nextMonthButton]} onPress={nextMonth} underlayColor='green'>
+                            <Image source={Global.nextMonthIcon} style={styles.graphIcon} />
+                        </TouchableHighlight>
+                    </View>
                     <View style={styles.amountBox}>
                         <Text style={styles.amount}>Jan</Text>
                         <Image source={seasonIcon} style={styles.seasonIcon}/>
@@ -256,8 +240,11 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '14%',
         flexDirection: 'row',
-        justifyContent: 'flex-end',
+        justifyContent: 'space-between',
         alignItems: 'center',
+    },
+    nextMonthBox: {
+        width: "70%",
     },
     graphButton: {
         width: "8%",
@@ -266,6 +253,10 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         marginLeft: '1%',
     },
+    nextMonthButton: {
+        width: "12%",
+        backgroundColor: 'blue',
+    },
     graphIcon: {
         width: "100%",
         height: "100%",
@@ -273,7 +264,7 @@ const styles = StyleSheet.create({
     },
     amountBox: {
         width: "20%",
-        height: "80%",
+        height: "90%",
         backgroundColor: 'white',
         borderRadius: 10,
         flexDirection: 'row',
