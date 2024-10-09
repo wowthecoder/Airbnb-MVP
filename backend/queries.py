@@ -1,7 +1,7 @@
 import psycopg
 import os
-import logging
 import json
+import random
 import boto3
 from botocore.exceptions import ClientError
 
@@ -15,14 +15,14 @@ db_user = "jherng"
 conn = None
 
 # Set up logging
-logging.basicConfig(
-    filename="app.log",
-    encoding="utf-8",
-    filemode="a",
-    format="{asctime} - {levelname} - {message}",
-    style="{",
-    datefmt="%Y-%m-%d %H:%M",
-)
+# logging.basicConfig(
+#     filename="app.log",
+#     encoding="utf-8",
+#     filemode="a",
+#     format="{asctime} - {levelname} - {message}",
+#     style="{",
+#     datefmt="%Y-%m-%d %H:%M",
+# )
 
 def get_secret():
     secret_name = "rds!db-86f7b5c4-d868-4c90-96e3-d006662505f8"
@@ -40,7 +40,7 @@ def get_secret():
             SecretId=secret_name
         )
     except ClientError as e:
-        logging.error(f"Error getting secret: {e}")
+        print(f"Error getting secret: {e}")
 
     secret = json.loads(get_secret_value_response['SecretString'])
     # print(f"retrieved secret: {secret}")
@@ -72,25 +72,23 @@ def connectToDb():
         # Fetch one result
         db_version = cursor.fetchone()
         res = f"Connected to: {db_version[0]}"
-        logging.info(res)
+        print(res)
 
     except Exception as e:
         res = f"Error connecting to the PostgreSQL database: {e}"
-        logging.error(res)
+        print(res)
 
     return res
 
 def getAreas():
     global conn
     if not conn:
-        logging.info(connectToDb())
+        print(connectToDb())
 
     res = []
     try:      
-        # Create a cursor object to execute queries
         cursor = conn.cursor()
 
-        # Execute a simple query to check the conn
         cursor.execute("""
             SELECT description FROM public.\"Areas\"
             ORDER BY id ASC
@@ -103,21 +101,19 @@ def getAreas():
 
     except Exception as e:
         conn.rollback()
-        logging.error(f"Error fetching from the PostgreSQL database: {e}")
+        print(f"Error fetching from the PostgreSQL database: {e}")
 
     return res
 
 def getAllProperties():
     global conn
     if not conn:
-        logging.info(connectToDb())
+        print(connectToDb())
 
     res = []
     try:      
-        # Create a cursor object to execute queries
         cursor = conn.cursor()
 
-        # Execute a simple query to check the conn
         cursor.execute("""
             SELECT * FROM public.\"Properties\"
             ORDER BY id ASC
@@ -127,7 +123,7 @@ def getAllProperties():
         res = cursor.fetchall()
 
     except Exception as e:
-        logging.error(f"Error fetching from the PostgreSQL database: {e}")
+        print(f"Error fetching from the PostgreSQL database: {e}")
 
     return res
 
@@ -135,14 +131,12 @@ def getAllProperties():
 def checkUserIdExists(userid):
     global conn
     if not conn:
-        logging.info(connectToDb())
+        print(connectToDb())
 
     res = []
     try:      
-        # Create a cursor object to execute queries
         cursor = conn.cursor()
 
-        # Execute a simple query to check the conn
         cursor.execute(f"""
             SELECT 1 FROM public.\"User_profile\" WHERE userid = {userid} LIMIT 1
         """)
@@ -152,21 +146,19 @@ def checkUserIdExists(userid):
 
     except Exception as e:
         conn.rollback()
-        logging.error(f"Error fetching from the PostgreSQL database: {e}")
+        print(f"Error fetching from the PostgreSQL database: {e}")
 
     return res
 
 def initUser(userid):
     global conn
     if not conn:
-        logging.info(connectToDb())
+        print(connectToDb())
 
     res = []
     try:      
-        # Create a cursor object to execute queries
         cursor = conn.cursor()
 
-        # Execute a simple query to check the conn
         cursor.execute(f"""
             INSERT INTO public.\"User_profile\" (userid, money, current_month)
             VALUES (\'{userid}\', 200000, 1);
@@ -177,7 +169,7 @@ def initUser(userid):
         res = "ok"
 
     except Exception as e:
-        logging.error(f"Error fetching from the PostgreSQL database: {e}")
+        print(f"Error fetching from the PostgreSQL database: {e}")
         conn.rollback()
         res = str(e)
 
@@ -186,62 +178,58 @@ def initUser(userid):
 def getUserById(id):
     global conn
     if not conn:
-        logging.info(connectToDb())
+        print(connectToDb())
 
     res = []
     try:      
-        # Create a cursor object to execute queries
         cursor = conn.cursor()
 
-        # Execute a simple query to check the conn
         cursor.execute(f"""
             SELECT * FROM public.\"Users\"
-            WHERE userid = {id}
+            WHERE userid = {id} LIMIT 1
         """)
         
         # Fetch all rows
         res = cursor.fetchall()
 
     except Exception as e:
-        logging.error(f"Error fetching from the PostgreSQL database: {e}")
+        print(f"Error fetching from the PostgreSQL database: {e}")
 
     return res
 
+# return list of ids and rental prices of properties owned by user
 def getPropertiesOwned(userid):
     global conn
     if not conn:
-        logging.info(connectToDb())
+        print(connectToDb())
 
     res = []
     try:      
-        # Create a cursor object to execute queries
         cursor = conn.cursor()
 
-        # Execute a simple query to check the conn
         cursor.execute(f"""
-            SELECT * FROM public.\"Properties\"
+            SELECT property_id, rental FROM public.\"UserProperties\"
             WHERE userid = {userid}
+            ORDER BY property_id ASC
         """)
         
         # Fetch all rows
         res = cursor.fetchall()
 
     except Exception as e:
-        logging.error(f"Error fetching from the PostgreSQL database: {e}")
+        print(f"Error fetching from the PostgreSQL database: {e}")
 
     return res
 
 def getEventsInMonth(month):
     global conn
     if not conn:
-        logging.info(connectToDb())
+        print(connectToDb())
 
     res = []
     try:      
-        # Create a cursor object to execute queries
         cursor = conn.cursor()
 
-        # Execute a simple query to check the conn
         cursor.execute(f"""
             SELECT * FROM public.\"Events\"
             WHERE month = {month}
@@ -251,21 +239,19 @@ def getEventsInMonth(month):
         res = cursor.fetchall()
 
     except Exception as e:
-        logging.error(f"Error fetching from the PostgreSQL database: {e}")
+        print(f"Error fetching from the PostgreSQL database: {e}")
 
     return res
 
 def getGraphData(userid):
     global conn
     if not conn:
-        logging.info(connectToDb())
+        print(connectToDb())
 
     res = []
     try:      
-        # Create a cursor object to execute queries
         cursor = conn.cursor()
 
-        # Execute a simple query to check the conn
         cursor.execute(f"""
             SELECT * FROM public.\"Financial_records\"
             WHERE userid = {userid}
@@ -276,42 +262,120 @@ def getGraphData(userid):
         res = cursor.fetchall()
 
     except Exception as e:
-        logging.error(f"Error fetching from the PostgreSQL database: {e}")
+        print(f"Error fetching from the PostgreSQL database: {e}")
 
     return res
 
-def calcMonthlyStats(userid):
+def calcMonthlyStats(userid, month):
     global conn
     if not conn:
-        logging.info(connectToDb())
+        print(connectToDb())
 
+    income = random.randint(1000, 5000)
+    expenses = random.randint(500, 2000)
+    growth_rate = [0.05/12, 0.035/12, 0.04/12]
     res = {
-        "num_guests": 0,
-        "rental_income": 0,
-        "expenses": 0,
-        "net_cash_flow": 0,
-        "property_value": 0
+        "num_guests": [random.randint(10, 100)] * 3,
+        "rental_income": income,
+        "expenses": expenses,
+        "net_cash_flow": income - expenses,
+        "property_value": [200000+growth_rate[0]*month, 100000+growth_rate[1]*month, 150000+growth_rate[2]*month]
     }
+
+    # try:      
+    #     # Create a cursor object to execute queries
+    #     cursor = conn.cursor()
+
+    #     # Get the market rental price for all properties
+    #     cursor.execute(f"""
+    #         SELECT market_price_per_night FROM public.\"Properties\"
+    #         ORDER BY id ASC
+    #     """)
+    #     mp = cursor.fetchall()
+    #     mp = [r[0] for r in mp]
+
+    #     # Get the rental price for all properties owned by the user
+    #     cursor.execute(f"""
+    #         SELECT rental FROM public.\"UserProperties\"
+    #         WHERE userid = {userid}
+    #         ORDER BY property_id ASC
+    #     """)
+    #     rp = cursor.fetchall()
+    #     rp = [r[0] for r in rp]
+
+
+    #     base_num_guests = 50
+    #     # Execute queries to find seasonality factor and user defined rent
+    #     propertiesId = getPropertiesOwned(userid)
+
+
+    #     num_guests = 0
+    #     rental_income = 0
+    #     expenses = 0
+    #     net_cash_flow = rental_income - expenses
+    #     property_value = 0
+        
+    #     conn.commit()
+
+    # except Exception as e:
+    #     print(f"Error fetching from the PostgreSQL database: {e}")
+    #     conn.rollback()
+
+    return res
+
+# deduction is either the full price, or the deposit for mortgages
+def buyProperty(userid, propertyid, rent, mortgage, insurance, deduction):
+    global conn
+    if not conn:
+        print(connectToDb())
+
+    res = ""
     try:      
-        # Create a cursor object to execute queries
         cursor = conn.cursor()
 
-        base_num_guests = 50
-        # Execute queries to find seasonality factor and user defined rent
-        propertiesId = getPropertiesOwned(userid)
+        cursor.execute(f"""
+            INSERT INTO public.\"UserProperties\" (userid, property_id, rental, mortgage_per_month, insurance_per_month)
+            VALUES ({userid}, {propertyid}, {rent}, {mortgage}, {insurance});
 
-
-        num_guests = 0
-        rental_income = 0
-        expenses = 0
-        net_cash_flow = rental_income - expenses
-        property_value = 0
+            UPDATE public.\"User_profile\" 
+            SET money = money - {deduction}
+            WHERE userid = {userid};
+        """)
         
-        # Fetch all rows
-        res = cursor.fetchall()
+        conn.commit()
+
+        res = "ok"
 
     except Exception as e:
-        logging.error(f"Error fetching from the PostgreSQL database: {e}")
+        print(f"Error fetching from the PostgreSQL database: {e}")
+        conn.rollback()
+        res = str(e)
+
+    return res
+
+def setRent(userid, propertyid, rent):
+    global conn
+    if not conn:
+        print(connectToDb())
+
+    res = ""
+    try:      
+        cursor = conn.cursor()
+
+        cursor.execute(f"""
+            UPDATE public.\"UserProperties\" 
+            SET rental = {rent}
+            WHERE userid = {userid} AND property_id = {propertyid};
+        """)
+        
+        conn.commit()
+
+        res = "ok"
+
+    except Exception as e:
+        print(f"Error fetching from the PostgreSQL database: {e}")
+        conn.rollback()
+        res = str(e)
 
     return res
 

@@ -3,7 +3,8 @@ import { useNavigation } from '@react-navigation/native';
 import Global from '../global';
 import data from '../database.json';
 
-const InsuranceOptionsScreen = () => {
+const InsuranceOptionsScreen = ({ route }) => {
+    const { userId } = route.params;
     const navigation = useNavigation();
 
     const propertyBought = ( number ) => {

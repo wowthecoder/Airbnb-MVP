@@ -4,11 +4,12 @@ import { useNavigation } from "@react-navigation/native";
 
 const months = ["Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-const GraphScreen = () => {   
+const GraphScreen = ({ route }) => { 
+    const { userId } = route.params;  
     const navigation = useNavigation();
 
     const backToMap = () => {
-        navigation.navigate('MainMap');
+        navigation.navigate('MainMap', { userId: userId });
     }
 
     const propertyValues = () => {

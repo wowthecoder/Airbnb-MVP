@@ -4,33 +4,68 @@ import PointerButton from "../components/PointerButton";
 import PropertyInfoBox from "../components/PropertyInfoBox";
 import { useState, useCallback } from 'react';
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { getAreas } from "../backendFuncs";
+import { getAreas, getProperties, getUserStats, getOwnedProperties } from "../backendFuncs";
 import Global from '../global';
-import data from '../database.json';
 
 const numAreas = 4;
 const numProperties = 3;
 
-const MainMapScreen = () => {  
-    const [seasonIcon, setSeasonIcon] = useState(Global.winterIcon);
+const MainMapScreen = ({ route }) => {  
+    const { userId } = route.params;
+    // [current month name, current season icon, money]
+    const [stats, setStats] = useState(["Jan", Global.winterIcon, 200000]);
+    // booleans controlling whether area info is displayed
     const [showAreaInfo, setShowAreaInfo] = useState(Array(numAreas).fill(false));
-    const [areaDesc, setAreaDesc] = useState(Array(numAreas).fill("haha"));
+    // The area descriptions from db
+    const [areaDesc, setAreaDesc] = useState([]);
+    // The property description data from db
+    const [properties, setProperties] = useState([]);
+    // The property info text displayed to players
     const [showPropertyInfo, setShowPropertyInfo] = useState(Array(numProperties).fill(""));
+    // The ids and rental prices of properties that the user owns
+    const [ownedProperties, setOwnedProperties] = useState([]);
+    // Hint text
     const [hint, setHint] = useState("");
+    // Pay if not owned, change rental price if owned
     const [propertyButtonText, setPropertyButtonText] = useState("Pay");
+    // Boolean controlling whether rental price slider is displayed
     const [showRentalSlider, setShowRentalSlider] = useState(false);
     const [rentalPrice, setRentalPrice] = useState(100);
-    const [showEvent, setShowEvent] = useState(false);
+    // Boolean controlling whether not enough money error is displayed
+    const [showNoMoney, setShowNoMoney] = useState(false);
+    // Event description
+    const [eventDesc, setEventDesc] = useState("");
+    // Boolean controlling whether next month box is displayed
+    const [showNextMonth, setShowNextMonth] = useState(false);
+    // Boolean controlling whether monthly financial summary is displayed
+    const [showSummary, setShowSummary] = useState(false);
+    // Boolean controlling whether results are shown (after Dec)
+    const [showResults, setShowResults] = useState(false);
+
     const navigation = useNavigation();
     
+    // Runs on every time this screen is loaded from other screens
     useFocusEffect(
         useCallback(() => {
+            // set area descriptions
             getAreas(setAreaDesc);
+
+            // set property descriptions
+            getProperties(setProperties);
+
+            // set user stats (current month name, current season icon, money)
+            getUserStats(userId, setStats);
+
+            // get a list of properties that the user owns
+            getOwnedProperties(userId, setOwnedProperties);
+
+            // get events in the current month
+            // getEventsInMonth(setEventDesc);
         }, [])
     );
 
     const getGraphs = () => {
-        navigation.navigate('Graph');
+        navigation.navigate('Graph', { userId: userId });
     }
 
     const getHints = (toggle) => {
@@ -52,14 +87,17 @@ const MainMapScreen = () => {
         }
     }
 
-    // Connect to db later
     const checkPropertyOwned = ( number ) => {
-        return number > 1;
+        for (let i = 0; i < ownedProperties.length; i++) {
+            if (ownedProperties[i][0] === number) {
+                return true;
+            }
+        }
+        return false;
     }
 
     const getRentalPrice = ( number ) => {
-        console.log(`Getting rental price for house ${number}`);
-        return 100;
+        return ownedProperties[number - 1][1];
     }
 
     const fillText = ( owned, price, numHotels, hotelFee, renovationCost, note ) => {  
@@ -72,18 +110,14 @@ const MainMapScreen = () => {
         return res;
     }
 
-    const setPropertyBtnTxt = ( owned ) => {
-        setPropertyButtonText(owned ? "Change Rental Price" : "Pay");
-    }
-
     const showProperty = ( number ) => {
         let owned = checkPropertyOwned(number);
         if (showPropertyInfo[number - 1] !== "") {
             setShowPropertyInfo(Array(numProperties).fill(""));
         } else {
-            let prop = data.properties[number - 1];
-            let info = fillText(owned, prop.price, prop["surrounding_hotels"], prop["avg_hotel_fee"], prop["renovation_costs"], prop["note"]);
-            setPropertyBtnTxt(owned);
+            let prop = properties[number - 1];
+            let info = fillText(owned, prop[1], prop[2], prop[3], prop[4], prop[5]);
+            setPropertyButtonText(owned ? "Change Rental Price" : "Pay");
             let arr = Array(numProperties).fill("");
             arr[number - 1] = info;
             setShowPropertyInfo(arr);
@@ -91,22 +125,15 @@ const MainMapScreen = () => {
     }
 
     const changeRentalPrice = (houseNum, amount) => {
-        console.log(`Changed rental price for house ${houseNum} to £${amount}`);
+        
     }
 
     const buyProperty = ( number ) => {
-        navigation.navigate('FinanceOptions');
-        // switch (number) {
-        //     case 1:
-        //         Global.money -= data.properties[0].price;
-        //         break;
-        //     case 2:
-        //         Global.money -= data.properties[1].price;
-        //         break;
-        //     case 3:
-        //         Global.money -= data.properties[2].price;
-        //         break;
-        // }
+        if (stats[2] < properties[number - 1][1]) {
+            setShowNoMoney(true);
+        } else {    
+            navigation.navigate('FinanceOptions');
+        }
     }
 
     const buyOrChangeRental = ( number ) => {
@@ -115,13 +142,15 @@ const MainMapScreen = () => {
                 setRentalPrice(getRentalPrice(number));
                 setShowRentalSlider(true);
                 setPropertyButtonText("Confirm")
-            } else {
+            } else { // confirm change rental
                 changeRentalPrice(number, rentalPrice);
                 setShowRentalSlider(false);
                 setPropertyButtonText("Change Rental Price");
             }
         } else {
             buyProperty(number);
+            // refresh the money display
+            getUserStats(setStats);
         }
     }
 
@@ -139,9 +168,9 @@ const MainMapScreen = () => {
                         </TouchableHighlight>
                     </View>
                     <View style={styles.amountBox}>
-                        <Text style={styles.amount}>Jan</Text>
-                        <Image source={seasonIcon} style={styles.seasonIcon}/>
-                        <Text style={styles.amount}>£200,000</Text>
+                        <Text style={styles.amount}>{stats[0]}</Text>
+                        <Image source={stats[1]} style={styles.seasonIcon}/>
+                        <Text style={styles.amount}>{stats[2]}</Text>
                     </View>
                     <TouchableHighlight style={styles.graphButton} onPress={getGraphs} underlayColor='green'>
                         <Image source={Global.graphIcon} style={styles.graphIcon} />

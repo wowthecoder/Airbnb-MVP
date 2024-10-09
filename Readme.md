@@ -2,4 +2,4 @@
 
 Investment Calculator
 
-Reminder: December is 0 not 12
+Add restart button to results page 

@@ -3,11 +3,12 @@ import { useNavigation } from '@react-navigation/native';
 import Global from '../global';
 import data from '../database.json';
 
-const FinanceOptionsScreen = () => {
+const FinanceOptionsScreen = ({ route }) => {
+    const { userId } = route.params;
     const navigation = useNavigation();
 
     const backToMap = () => {
-        navigation.navigate('MainMap');
+        navigation.navigate('MainMap', {userId: userId});
     }
 
     const buyInsurance = ( number ) => {

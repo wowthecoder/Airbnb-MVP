@@ -3,7 +3,8 @@ import { useState } from 'react';
 import { useNavigation } from "@react-navigation/native";
 import Global from '../global';
 
-const IntroScreen = () => {  
+const IntroScreen = ({ route }) => {  
+    const { userId } = route.params;
     const [msg, setMsg] = useState(Global.welcomeMsg);
     const [infi, setInfi] = useState(Global.handsUpImg);
     const [seasonIcon, setSeasonIcon] = useState(Global.winterIcon);
@@ -26,7 +27,7 @@ const IntroScreen = () => {
             setNextBtn(true);
             setInfi(Global.handsUpImg);
         } else if (msg == Global.introMsg4) {
-            navigation.navigate('MainMap');
+            navigation.navigate('MainMap', { userId: userId });
         }
     }
 

@@ -2,11 +2,12 @@ import { StyleSheet, Text, View, Image, TouchableWithoutFeedback, ImageBackgroun
 import { useNavigation } from '@react-navigation/native'; 
 import Global from '../global';
 
-const BoughtPropertyScreen = () => {
+const BoughtPropertyScreen = ({ route }) => {
+    const { userId } = route.params;
     const navigation = useNavigation();
 
     const backToMap = () => {
-        navigation.navigate('MainMap');
+        navigation.navigate('MainMap', { userId: userId });
     }
 
     return (

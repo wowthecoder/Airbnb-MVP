@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from queries import connectToDb, getAreas, getAllProperties, checkUserIdExists, \
     initUser, getUserById, getPropertiesOwned, getEventsInMonth, getGraphData, \
-    calcMonthlyStats#, buyProperty, setRent
+    calcMonthlyStats, buyProperty, setRent
 
 app = Flask(__name__)
 
@@ -30,9 +30,9 @@ def createUser():
     else:
         return jsonify({"message": res}), 400
 
-# This returns the user's current month and money
-@app.route('/getUserById/')
-def getUserById():
+# This returns the user's stats (current month number and money)
+@app.route('/getUserStats/<id>')
+def getUserStats(id):
     return jsonify(getUserById(id))
 
 @app.route('/getPropertiesOwned/<userid>')
@@ -46,9 +46,9 @@ def eventsInMonth(month):
 # Calculate the monthly statistics (net cash flow, rental income, expenses, property value) for the current month
 # Update the table
 # Return the statistics
-@app.route('/calculateMonthlyStats/<userid>')
-def calculateMonthlyStats(userid):
-    return jsonify(calcMonthlyStats(userid))
+@app.route('/calculateMonthlyStats/<userid>/<month>')
+def calculateMonthlyStats(userid, month):
+    return jsonify(calcMonthlyStats(userid, month))
 
 # This returns the user's cash flow, rental income, and property value up to the current month
 @app.route('/graphdata/<userid>')
@@ -56,14 +56,16 @@ def graphData(userid):
     return jsonify(getGraphData(userid))
 
 # Precondition: The user has enough money to buy the property (not including insurance and deposit)
-# @app.route('/buyProperty/<userid>/<propertyid>')
-# def buyNewProperty(userid, propertyid):
-#     return buyProperty(userid, propertyid)
+@app.route('/buyProperty', methods=['POST'])
+def buyNewProperty():
+    data = request.get_json()
+    return buyProperty(data['userid'], data['propertyid'], data["rent"], data['mortgage'], data['insurance'], data['deduction'])
 
 # # Precondition: user owns the property
-# @app.route('/setRent/<userid>/<propertyid>/<rent>')
-# def setNewRent(userid, propertyid, rent):
-#     return setRent(userid, propertyid, rent)
+@app.route('/setRent', methods=['POST'])
+def setNewRent():
+    data = request.get_json()
+    return setRent(data['userid'], data['propertyid'], data['rent'])
 
 
 if __name__ == "__main__":

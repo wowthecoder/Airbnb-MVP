@@ -8,6 +8,7 @@ import { checkUserIdExists, createUser } from "../backendFuncs";
 const MenuScreen = () => { 
     const navigation = useNavigation();
     const [nextScreen, setNextScreen] = useState('Intro');
+    const [userId, setUserId] = useState("");
 
     useEffect(() => {
         const getDeviceId = async () => {
@@ -26,6 +27,7 @@ const MenuScreen = () => {
                 // Initialise player data
                 createUser(id);
             }
+            setUserId(id);
         };
     
         getDeviceId();
@@ -33,7 +35,7 @@ const MenuScreen = () => {
 
     // If device id exists in table, skip intro
     const startIntro = () => {
-        navigation.navigate(nextScreen);
+        navigation.navigate(nextScreen, { userId: userId });
     }
 
     return (
