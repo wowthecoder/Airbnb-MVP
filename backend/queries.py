@@ -10,7 +10,6 @@ db_host = "airbnb-db.cjyekamgomzz.eu-west-2.rds.amazonaws.com"  # RDS Endpoint
 db_port = "5432"  # Default PostgreSQL port
 db_name = "postgres"
 db_user = "jherng"
-# db_password = "h(rSWH2BaC0vu#Y~BnStTXjGUHHB" 
 
 conn = None
 
