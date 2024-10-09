@@ -2,7 +2,6 @@ import { StyleSheet, Text, View, TouchableHighlight, ImageBackground } from 'rea
 import { useNavigation } from '@react-navigation/native'; 
 import { buyProperty } from '../backendFuncs';
 import Global from '../global';
-import data from '../database.json';
 
 const InsuranceOptionsScreen = ({ route }) => {
     const { userId, propertyId, initialRent, mortgage, deduction } = route.params;

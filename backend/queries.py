@@ -323,6 +323,32 @@ def calcMonthlyStats(userid, month):
 
     return res
 
+def advanceMonth(userid):
+    global conn
+    if not conn:
+        print(connectToDb())
+
+    res = ""
+    try:      
+        cursor = conn.cursor()
+
+        cursor.execute(f"""
+            UPDATE public.\"User_profile\" 
+            SET current_month = current_month + 1
+            WHERE userid = {userid};
+        """)
+        
+        conn.commit()
+
+        res = "ok"
+
+    except Exception as e:
+        print(f"Error fetching from the PostgreSQL database: {e}")
+        conn.rollback()
+        res = str(e)
+
+    return res
+
 # deduction is either the full price, or the deposit for mortgages
 def buyProperty(userid, propertyid, rent, mortgage, insurance, deduction):
     global conn

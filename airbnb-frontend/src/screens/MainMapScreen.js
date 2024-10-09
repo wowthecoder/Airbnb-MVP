@@ -4,11 +4,25 @@ import PointerButton from "../components/PointerButton";
 import PropertyInfoBox from "../components/PropertyInfoBox";
 import { useState, useCallback } from 'react';
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
-import { getAreas, getProperties, getUserStats, getOwnedProperties } from "../backendFuncs";
+import { getAreas, getProperties, getUserStats, getOwnedProperties, setRent, calcMonthlyFinances, advanceMonth} from "../backendFuncs";
 import Global from '../global';
 
 const numAreas = 4;
 const numProperties = 3;
+const monthMap = {
+    "Jan": 1,
+    "Feb": 2,
+    "Mar": 3,
+    "Apr": 4,
+    "May": 5,
+    "Jun": 6,
+    "Jul": 7,
+    "Aug": 8,
+    "Sep": 9,
+    "Oct": 10,
+    "Nov": 11,
+    "Dec": 12,
+};
 
 const MainMapScreen = ({ route }) => {  
     const { userId } = route.params;
@@ -30,15 +44,14 @@ const MainMapScreen = ({ route }) => {
     const [propertyButtonText, setPropertyButtonText] = useState("Pay");
     // Boolean controlling whether rental price slider is displayed
     const [showRentalSlider, setShowRentalSlider] = useState(false);
+    // Rental price display on slider
     const [rentalPrice, setRentalPrice] = useState(100);
     // Boolean controlling whether not enough money error is displayed
     const [showNoMoney, setShowNoMoney] = useState(false);
     // Event description
     const [eventDesc, setEventDesc] = useState("");
-    // Boolean controlling whether next month box is displayed
-    const [showNextMonth, setShowNextMonth] = useState(false);
-    // Boolean controlling whether monthly financial summary is displayed
-    const [showSummary, setShowSummary] = useState(false);
+    // Monthy financial summary display
+    const [monthSummary, setMonthSummary] = useState("");
     // Boolean controlling whether results are shown (after Dec)
     const [showResults, setShowResults] = useState(false);
 
@@ -60,7 +73,7 @@ const MainMapScreen = ({ route }) => {
             getOwnedProperties(userId, setOwnedProperties);
 
             // get events in the current month
-            // getEventsInMonth(setEventDesc);
+            getEventsInMonth(setEventDesc);
         }, [])
     );
 
@@ -125,14 +138,19 @@ const MainMapScreen = ({ route }) => {
     }
 
     const changeRentalPrice = (houseNum, amount) => {
-        
+        setRent(userId, houseNum, amount);
     }
 
     const buyProperty = ( number ) => {
         if (stats[2] < properties[number - 1][1]) {
             setShowNoMoney(true);
         } else {    
-            navigation.navigate('FinanceOptions');
+            navigation.navigate('FinanceOptions', {
+                userId: userId, 
+                propertyId: number, 
+                initialRent: properties[number - 1][7],
+                fullPrice: properties[number - 1][1],
+            });
         }
     }
 
@@ -155,7 +173,13 @@ const MainMapScreen = ({ route }) => {
     }
 
     const nextMonth = () => {
-        console.log("Next month");
+        if (monthSummary === "") {
+            let finances = calcMonthlyFinances(userId, monthMap[stats[0]]);
+            let summary = `Number of guests: ${finances["num_guests"][0]} (AirBnB), ${finances["num_guests"][1]} (hotel), ${finances["num_guests"][2]} (total)\n`
+            setShowNextMonth(true);
+        } else {
+
+        }
     }
 
     return (
@@ -251,6 +275,14 @@ const MainMapScreen = ({ route }) => {
                     </View>
                 </TouchableWithoutFeedback>
                 }
+
+                {showNoMoney &&
+                <View style={styles.hintBox}>
+                    <Text style={[styles.hint, { color: "red" }]}>You don't have enough money to buy this property.</Text>
+                </View>
+                }
+
+
             </ImageBackground>
         </View>
     );

@@ -137,14 +137,14 @@ const buyProperty = async (userid, propertyid, rent, mortgage, insurance, deduct
             }),
         });
         const res = await response.json();
-        console.log(res);
+        console.log("buying property: ", res);
     } catch (error) {
         console.error("Error buying property:", error);
     }
 }
 
 // Pre-condition: user owns the property
-const setRentalPrice = async (userid, propertyid, price) => {
+const setRent = async (userid, propertyid, price) => {
     try {
         const response = await fetch(`${Global.backendServerUrl}/setRentalPrice`, {
             method: 'POST',
@@ -158,7 +158,7 @@ const setRentalPrice = async (userid, propertyid, price) => {
             }),
         });
         const res = await response.json();
-        console.log(res["message"]);
+        console.log("Setting rent: ", res["message"]);
     } catch (error) {
         console.error("Error setting rental price:", error);
     }
@@ -175,5 +175,15 @@ const getEventInMonth = async (month) => {
     }
 }
 
+const advanceMonth = async (userid) => {
+    try {
+        const response = await fetch(`${Global.backendServerUrl}/toNextMonth/${userid}`);
+        const res = await response.json();
+        console.log("Advancing month: ", res);
+    } catch (error) {
+        console.error("Error advancing month:", error);
+    }
+}
+
 export { getAreas, getProperties, checkUserIdExists, createUser, getUserStats,
-    getOwnedProperties, buyProperty, setRentalPrice, getEventInMonth };
+    getOwnedProperties, buyProperty, setRent, getEventInMonth, advanceMonth };

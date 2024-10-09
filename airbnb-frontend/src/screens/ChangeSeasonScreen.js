@@ -3,11 +3,11 @@ import { useNavigation } from '@react-navigation/native';
 import Global from '../global';
 
 const ChangeSeasonScreen = ({ route }) => {
-    const { season } = route.params;
+    const { season, userId } = route.params;
     const navigation = useNavigation();
 
     const backToMap = () => {
-        navigation.navigate('MainMap');
+        navigation.navigate('MainMap', { userId: userId });
     }
 
     let backgroundImage;

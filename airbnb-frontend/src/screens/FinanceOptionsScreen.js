@@ -4,7 +4,7 @@ import Global from '../global';
 import data from '../database.json';
 
 const FinanceOptionsScreen = ({ route }) => {
-    const { userId } = route.params;
+    const { userId, propertyId, initialRent, fullPrice } = route.params;
     const navigation = useNavigation();
 
     const backToMap = () => {
@@ -12,7 +12,28 @@ const FinanceOptionsScreen = ({ route }) => {
     }
 
     const buyInsurance = ( number ) => {
-        navigation.navigate('InsuranceOptions');
+        let payment = 0;
+        let mortgage = 0;
+        switch (number) {
+            case 1:
+                payment = fullPrice;
+                break;
+            case 2:
+                payment = fullPrice * 0.25;
+                mortgage = (fullPrice / (30 * 12)) +  (fullPrice * 0.05 / 12);
+                break;
+            case 3:
+                payment = fullPrice * 0.25;
+                mortgage = fullPrice * 0.065 / 12;
+                break;
+        }
+        navigation.navigate('InsuranceOptions', { 
+            userId: userId, 
+            propertyId: propertyId,
+            initialRent: initialRent, 
+            mortgage: mortgage, 
+            deduction: payment
+        });
     }
 
     return (
@@ -27,21 +48,21 @@ const FinanceOptionsScreen = ({ route }) => {
                         <View style={styles.optionsContainer}>
                             <Text style={styles.optionTitle}>{data["finance_options"][0].title}</Text>
                             <Text style={styles.optionDescription}>{data["finance_options"][0].description}</Text>
-                            <TouchableHighlight style={styles.optionButton} underlayColor='green' onPress={buyInsurance}>
+                            <TouchableHighlight style={styles.optionButton} underlayColor='green' onPress={() => buyInsurance(1)}>
                                 <Text style={styles.optionButtonText}>Option 1</Text>
                             </TouchableHighlight>
                         </View>
                         <View style={[styles.optionsContainer, { marginHorizontal: "2%" }]}>
                             <Text style={styles.optionTitle}>{data["finance_options"][1].title}</Text>
                             <Text style={styles.optionDescription}>{data["finance_options"][1].description}</Text>
-                            <TouchableHighlight style={styles.optionButton} underlayColor='green' onPress={buyInsurance}>
+                            <TouchableHighlight style={styles.optionButton} underlayColor='green' onPress={() => buyInsurance(2)}>
                                 <Text style={styles.optionButtonText}>Option 2</Text>
                             </TouchableHighlight>
                         </View>
                         <View style={styles.optionsContainer}>
                             <Text style={styles.optionTitle}>{data["finance_options"][2].title}</Text>
                             <Text style={styles.optionDescription}>{data["finance_options"][2].description}</Text>
-                            <TouchableHighlight style={styles.optionButton} underlayColor='green' onPress={buyInsurance}>
+                            <TouchableHighlight style={styles.optionButton} underlayColor='green' onPress={() => buyInsurance(3)}>
                                 <Text style={styles.optionButtonText}>Option 3</Text>
                             </TouchableHighlight>
                         </View>

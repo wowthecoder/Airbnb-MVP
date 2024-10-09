@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from queries import connectToDb, getAreas, getAllProperties, checkUserIdExists, \
     initUser, getUserById, getPropertiesOwned, getEventsInMonth, getGraphData, \
-    calcMonthlyStats, buyProperty, setRent
+    calcMonthlyStats, advanceMonth, buyProperty, setRent
 
 app = Flask(__name__)
 
@@ -54,6 +54,10 @@ def calculateMonthlyStats(userid, month):
 @app.route('/graphdata/<userid>')
 def graphData(userid):
     return jsonify(getGraphData(userid))
+
+@app.route('/advanceMonth/<userid>')
+def toNextMonth(userid):
+    return advanceMonth(userid)
 
 # Precondition: The user has enough money to buy the property (not including insurance and deposit)
 @app.route('/buyProperty', methods=['POST'])
