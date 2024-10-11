@@ -211,7 +211,7 @@ def getPropertiesOwned(userid):
     if not conn:
         print(connectToDb())
 
-    res = []
+    res = {}
     try:      
         cursor = conn.cursor()
 
@@ -222,7 +222,11 @@ def getPropertiesOwned(userid):
         """)
         
         # Fetch all rows
-        res = cursor.fetchall()
+        response = cursor.fetchall()
+
+        # Convert to dictionary
+        for [id, rent] in response:
+            res[id] = rent
 
     except Exception as e:
         print(f"Error fetching user owned properties from the PostgreSQL database: {e}")

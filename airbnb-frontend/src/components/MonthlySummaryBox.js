@@ -1,62 +1,106 @@
-import { StyleSheet, View, Text, TouchableHighlight } from "react-native";
-import Slider from '@react-native-community/slider';
-import { useState } from "react";
+import React from 'react';
+import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
 
-const MonthlySummaryBox = () => {
-    return (
-        <View style={[styles.propInfoContainer, locationOnScreen]}>
-            <Text style={styles.propText}>{infoText}</Text> 
-            {propertyOwned && 
-            <Text style={styles.rentalText}>Rental price per night(£): {rentalPrice}</Text>
-            }
-            {showSlider && 
-            <View style={styles.sliderContainer}>
-                <Text>50</Text>
-                <Slider 
-                    style={{width: 200, height: 40}} 
-                    minimumValue={50} 
-                    maximumValue={500} 
-                    minimumTrackTintColor="blue" 
-                    maximumTrackTintColor="#000000" 
-                    thumbTintColor="blue"
-                    step={1}
-                    value={rentalPrice}
-                    onValueChange={setRentalPrice}
-                />
-                <Text>500</Text>
-            </View>
-            }
-            <TouchableHighlight style={styles.payButton} onPress={onButtonPress} underlayColor='green'>
-                <Text style={styles.payText}>Next Month!</Text>
-            </TouchableHighlight>
+const MonthlySummaryBox = ({ guests, income, expenses, propertyValues, onStayCurrentMonth, onGoNextMonth }) => {
+  return (
+    <View style={styles.container}>
+      {/* Display the statistics in a table-like structure */}
+      <View style={styles.table}>
+        {/* Header Row */}
+        <View style={styles.tableRow}>
+          <Text style={[styles.tableHeader, styles.propertyCell]}>Property 1</Text>
+          <Text style={[styles.tableHeader, styles.propertyCell]}>Property 2</Text>
+          <Text style={[styles.tableHeader, styles.propertyCell]}>Property 3</Text>
         </View>
-    );
-}
+        
+        {/* Guests Row */}
+        <View style={styles.tableRow}>
+          <Text style={styles.tableCell}>{guests[0]} guests</Text>
+          <Text style={styles.tableCell}>{guests[1]} guests</Text>
+          <Text style={styles.tableCell}>{guests[2]} guests</Text>
+        </View>
 
-const styles = StyleSheet.create({ 
-    sliderContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    propText: {
-        textAlign: "left",
-    }, 
-    rentalText: {
-        fontWeight: "bold",
-    },
-    payButton: {
-        backgroundColor: 'royalblue',
-        padding: 10,
-        borderRadius: 10,
-        minWidth: '40%',
-        maxWidth: '90%',
-        marginTop: 5,
-    },
-    payText: {
-        color: 'white',
-        fontSize: 18,
-        textAlign: 'center',
-    },
+        {/* Property Values Row */}
+        <View style={styles.tableRow}>
+          <Text style={styles.tableCell}>Value: ${propertyValues[0]}</Text>
+          <Text style={styles.tableCell}>Value: ${propertyValues[1]}</Text>
+          <Text style={styles.tableCell}>Value: ${propertyValues[2]}</Text>
+        </View>
+
+        {/* Income and Expenses Row (Merged Cell) */}
+        <View style={styles.tableRow}>
+          <Text style={[styles.tableCell, styles.mergedCell]}>{`Income: $${income}\nExpenses: $${expenses}`}</Text>
+        </View>
+      </View>
+
+      {/* Buttons: Stay in Current Month and Go to Next Month */}
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity style={[styles.button, styles.redButton]} onPress={onStayCurrentMonth}>
+          <Text style={styles.buttonText}>Stay in current month</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.button, styles.blueButton]} onPress={onGoNextMonth}>
+          <Text style={styles.buttonText}>Go to next month</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+};
+
+// Styles for the component
+const styles = StyleSheet.create({
+  container: {
+    padding: 20,
+  },
+  table: {
+    marginBottom: 20,
+  },
+  tableRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 10,
+  },
+  tableHeader: {
+    fontWeight: 'bold',
+    fontSize: 16,
+    textAlign: 'center',
+  },
+  tableCell: {
+    borderWidth: 1,
+    borderColor: '#ddd',
+    padding: 10,
+    textAlign: 'center',
+    fontSize: 14,
+    flex: 1,
+  },
+  propertyCell: {
+    flex: 1,
+  },
+  mergedCell: {
+    flex: 3, // Merge the entire row into one cell
+    textAlign: 'center',
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  button: {
+    flex: 1,
+    paddingVertical: 12,
+    marginHorizontal: 5,
+    alignItems: 'center',
+    borderRadius: 5,
+  },
+  redButton: {
+    backgroundColor: 'red',
+  },
+  blueButton: {
+    backgroundColor: 'blue',
+  },
+  buttonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 16,
+  },
 });
 
 export default MonthlySummaryBox;

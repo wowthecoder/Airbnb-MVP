@@ -4,7 +4,7 @@ import Global from '../global';
 import data from '../database.json';
 
 const FinanceOptionsScreen = ({ route }) => {
-    const { userId, propertyId, initialRent, fullPrice } = route.params;
+    const { userId, propertyId, initialRent, fullPrice, renovateCost } = route.params;
     const navigation = useNavigation();
 
     const backToMap = () => {
@@ -12,21 +12,21 @@ const FinanceOptionsScreen = ({ route }) => {
     }
 
     const buyInsurance = ( number ) => {
-        let payment = 0;
+        let payment = renovateCost;
         let mortgage = 0;
         switch (number) {
             case 1:
-                payment = fullPrice;
+                payment += fullPrice;
                 break;
             case 2:
-                payment = fullPrice * 0.25;
+                payment += fullPrice * 0.25;
                 mortgage = (fullPrice / (30 * 12)) +  (fullPrice * 0.05 / 12);
                 // Round to 2 decimal places
                 mortgage = Math.round(mortgage * 100) / 100;
                 console.log("Mortgage:", mortgage);
                 break;
             case 3:
-                payment = fullPrice * 0.25;
+                payment += fullPrice * 0.25;
                 mortgage = fullPrice * 0.065 / 12;
                 // Round to 2 decimal places
                 mortgage = Math.round(mortgage * 100) / 100;

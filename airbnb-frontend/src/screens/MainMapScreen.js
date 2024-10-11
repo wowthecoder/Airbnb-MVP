@@ -2,6 +2,7 @@ import { StyleSheet, View, ImageBackground, Image, Text, TouchableHighlight, Tou
 import LocationDescText from "../components/LocationDescText";
 import PointerButton from "../components/PointerButton";
 import PropertyInfoBox from "../components/PropertyInfoBox";
+import MonthlySummaryBox from "../components/MonthlySummaryBox";
 import { useState, useCallback } from 'react';
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import { getAreas, getProperties, getUserStats, getOwnedProperties, setRent, calcMonthlyFinances, advanceMonth} from "../backendFuncs";
@@ -37,7 +38,7 @@ const MainMapScreen = ({ route }) => {
     // The property info text displayed to players
     const [showPropertyInfo, setShowPropertyInfo] = useState(Array(numProperties).fill(""));
     // The ids and rental prices of properties that the user owns
-    const [ownedProperties, setOwnedProperties] = useState([]);
+    const [ownedProperties, setOwnedProperties] = useState({});
     // Hint text
     const [hint, setHint] = useState("");
     // Pay if not owned, change rental price if owned
@@ -51,7 +52,7 @@ const MainMapScreen = ({ route }) => {
     // Event description
     const [eventDesc, setEventDesc] = useState("");
     // Monthy financial summary display
-    const [monthSummary, setMonthSummary] = useState("");
+    const [showMonthSummary, setShowMonthSummary] = useState(false);
     // Boolean controlling whether results are shown (after Dec)
     const [showResults, setShowResults] = useState(false);
 
@@ -105,16 +106,11 @@ const MainMapScreen = ({ route }) => {
     }
 
     const checkPropertyOwned = ( number ) => {
-        for (let i = 0; i < ownedProperties.length; i++) {
-            if (ownedProperties[i][0] === number) {
-                return true;
-            }
-        }
-        return false;
+        return number.toString() in ownedProperties;
     }
 
     const getRentalPrice = ( number ) => {
-        return ownedProperties[number - 1][1];
+        return ownedProperties[number.toString()];
     }
 
     const fillText = ( owned, price, numHotels, hotelFee, renovationCost, note ) => {  
@@ -162,6 +158,7 @@ const MainMapScreen = ({ route }) => {
                 propertyId: number, 
                 initialRent: properties[number - 1][7],
                 fullPrice: properties[number - 1][1],
+                renovateCost: properties[number - 1][4],
             });
         }
     }
@@ -270,7 +267,7 @@ const MainMapScreen = ({ route }) => {
                     infoText={showPropertyInfo[2]} 
                     onButtonPress={() => buyOrChangeRental(3)} 
                     buttonText={propertyButtonText}
-                    propertyOwned={checkPropertyOwned(2)} 
+                    propertyOwned={checkPropertyOwned(3)} 
                     showSlider={showRentalSlider} 
                     rentalPrice={rentalPrice}
                     setRentalPrice={setRentalPrice}
@@ -292,7 +289,16 @@ const MainMapScreen = ({ route }) => {
                 </View>
                 }
 
-
+                {showMonthSummary &&
+                <RentalStatistics
+                    guests={[2, 4, 3]}
+                    income={5000.75}
+                    expenses={1200.45}
+                    propertyValues={[250000, 300000, 450000]}
+                    onStayCurrentMonth={() => console.log('Stayed in current month')}
+                    onGoNextMonth={() => console.log('Going to next month')}
+                />
+                }
             </ImageBackground>
         </View>
     );
