@@ -24,7 +24,7 @@ const MenuScreen = () => {
                 setNextScreen('MainMap');
             } else {
                 setNextScreen('Intro');
-                // Initialise player data
+                // Initialise player data 
                 createUser(id);
             }
             setUserId(id);

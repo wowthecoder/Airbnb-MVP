@@ -21,16 +21,24 @@ const FinanceOptionsScreen = ({ route }) => {
             case 2:
                 payment = fullPrice * 0.25;
                 mortgage = (fullPrice / (30 * 12)) +  (fullPrice * 0.05 / 12);
+                // Round to 2 decimal places
+                mortgage = Math.round(mortgage * 100) / 100;
+                console.log("Mortgage:", mortgage);
                 break;
             case 3:
                 payment = fullPrice * 0.25;
                 mortgage = fullPrice * 0.065 / 12;
+                // Round to 2 decimal places
+                mortgage = Math.round(mortgage * 100) / 100;
+                console.log("Mortgage:", mortgage);
                 break;
         }
+        // Pass in the full price so that insurance can come back to this screen
         navigation.navigate('InsuranceOptions', { 
             userId: userId, 
             propertyId: propertyId,
             initialRent: initialRent, 
+            fullPrice: fullPrice,
             mortgage: mortgage, 
             deduction: payment
         });

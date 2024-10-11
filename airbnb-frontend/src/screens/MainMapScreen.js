@@ -60,6 +60,10 @@ const MainMapScreen = ({ route }) => {
     // Runs on every time this screen is loaded from other screens
     useFocusEffect(
         useCallback(() => {
+            // Close all boxes
+            setShowAreaInfo(Array(numAreas).fill(false));
+            setShowPropertyInfo(Array(numProperties).fill(""));
+
             // set area descriptions
             getAreas(setAreaDesc);
 
@@ -73,7 +77,7 @@ const MainMapScreen = ({ route }) => {
             getOwnedProperties(userId, setOwnedProperties);
 
             // get events in the current month
-            getEventsInMonth(setEventDesc);
+            // getEventsInMonth(setEventDesc);
         }, [])
     );
 
@@ -124,6 +128,9 @@ const MainMapScreen = ({ route }) => {
     }
 
     const showProperty = ( number ) => {
+        // Refresh stats
+        getOwnedProperties(userId, setOwnedProperties);
+
         let owned = checkPropertyOwned(number);
         if (showPropertyInfo[number - 1] !== "") {
             setShowPropertyInfo(Array(numProperties).fill(""));
@@ -134,6 +141,10 @@ const MainMapScreen = ({ route }) => {
             let arr = Array(numProperties).fill("");
             arr[number - 1] = info;
             setShowPropertyInfo(arr);
+            if (owned) {
+                setRentalPrice(getRentalPrice(number));
+                setShowRentalSlider(false);
+            }
         }
     }
 
@@ -144,7 +155,8 @@ const MainMapScreen = ({ route }) => {
     const buyProperty = ( number ) => {
         if (stats[2] < properties[number - 1][1]) {
             setShowNoMoney(true);
-        } else {    
+        } else { 
+            // console.log("initial rent:", properties[number - 1][7], ", full price:", properties[number - 1][1]);   
             navigation.navigate('FinanceOptions', {
                 userId: userId, 
                 propertyId: number, 
@@ -167,8 +179,6 @@ const MainMapScreen = ({ route }) => {
             }
         } else {
             buyProperty(number);
-            // refresh the money display
-            getUserStats(setStats);
         }
     }
 

@@ -39,6 +39,6 @@ module.exports = {
     springBg: require('../assets/springbg.png'),
     summerBg: require('../assets/summerbg.png'),
     autumnBg: require('../assets/autumnbg.png'),
-    // backendServerUrl: 'http://172.26.224.23:5000', // for testing on campus
-    backendServerUrl: 'http://10.136.143.3:5000', // for testing in accom
+    backendServerUrl: 'http://172.26.255.4:5000', // for testing on campus
+    // backendServerUrl: 'http://10.136.143.3:5000', // for testing in accom
 } 

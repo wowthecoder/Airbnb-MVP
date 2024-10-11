@@ -57,19 +57,31 @@ def graphData(userid):
 
 @app.route('/advanceMonth/<userid>')
 def toNextMonth(userid):
-    return advanceMonth(userid)
+    res = advanceMonth(userid)
+    if res == "ok":
+        return jsonify({"message": "Advanced to next month"}), 200
+    else:
+        return jsonify({"message": res}), 400
 
 # Precondition: The user has enough money to buy the property (not including insurance and deposit)
 @app.route('/buyProperty', methods=['POST'])
 def buyNewProperty():
     data = request.get_json()
-    return buyProperty(data['userid'], data['propertyid'], data["rent"], data['mortgage'], data['insurance'], data['deduction'])
+    res = buyProperty(data['userid'], data['propertyid'], data["rent"], data['mortgage'], data['insurance'], data['deduction'])
+    if res == "ok":
+        return jsonify({"message": "Property bought"}), 200
+    else:
+        return jsonify({"message": res}), 400
 
 # # Precondition: user owns the property
 @app.route('/setRent', methods=['POST'])
 def setNewRent():
     data = request.get_json()
-    return setRent(data['userid'], data['propertyid'], data['rent'])
+    res = setRent(data['userid'], data['propertyid'], data['rent'])
+    if res == "ok":
+        return jsonify({"message": "New Rent set"}), 200
+    else:
+        return jsonify({"message": res}), 400
 
 
 if __name__ == "__main__":

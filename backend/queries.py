@@ -100,7 +100,7 @@ def getAreas():
 
     except Exception as e:
         conn.rollback()
-        print(f"Error fetching from the PostgreSQL database: {e}")
+        print(f"Error fetching area descriptions from the PostgreSQL database: {e}")
 
     return res
 
@@ -122,7 +122,7 @@ def getAllProperties():
         res = cursor.fetchall()
 
     except Exception as e:
-        print(f"Error fetching from the PostgreSQL database: {e}")
+        print(f"Error fetching property data from the PostgreSQL database: {e}")
 
     return res
 
@@ -137,15 +137,18 @@ def checkUserIdExists(userid):
         cursor = conn.cursor()
 
         cursor.execute(f"""
-            SELECT 1 FROM public.\"User_profile\" WHERE userid = {userid} LIMIT 1
+            SELECT 1 FROM public.\"UserProfile\" WHERE userid = \'{userid}\' LIMIT 1
         """)
         
         # Fetch all rows
         res = cursor.fetchall()
 
+        # Flatten into single list
+        res = res[0]
+
     except Exception as e:
         conn.rollback()
-        print(f"Error fetching from the PostgreSQL database: {e}")
+        print(f"Error checking existence of user id in the PostgreSQL database: {e}")
 
     return res
 
@@ -159,8 +162,9 @@ def initUser(userid):
         cursor = conn.cursor()
 
         cursor.execute(f"""
-            INSERT INTO public.\"User_profile\" (userid, money, current_month)
-            VALUES (\'{userid}\', 200000, 1);
+            INSERT INTO public.\"UserProfile\" (userid, money, current_month)
+            VALUES (\'{userid}\', 200000, 1)
+            ON CONFLICT (userid) DO NOTHING;
         """)
         
         conn.commit()
@@ -168,7 +172,7 @@ def initUser(userid):
         res = "ok"
 
     except Exception as e:
-        print(f"Error fetching from the PostgreSQL database: {e}")
+        print(f"Error creating user the PostgreSQL database: {e}")
         conn.rollback()
         res = str(e)
 
@@ -184,15 +188,20 @@ def getUserById(id):
         cursor = conn.cursor()
 
         cursor.execute(f"""
-            SELECT * FROM public.\"Users\"
-            WHERE userid = {id} LIMIT 1
+            SELECT * FROM public.\"UserProfile\"
+            WHERE userid = \'{id}\' LIMIT 1
         """)
         
         # Fetch all rows
         res = cursor.fetchall()
 
+        # Flatten into single list
+        res = res[0]
+        # round money to nearest integer
+        res[2] = round(res[2])
+
     except Exception as e:
-        print(f"Error fetching from the PostgreSQL database: {e}")
+        print(f"Error fetching user stats from the PostgreSQL database: {e}")
 
     return res
 
@@ -207,16 +216,16 @@ def getPropertiesOwned(userid):
         cursor = conn.cursor()
 
         cursor.execute(f"""
-            SELECT property_id, rental FROM public.\"UserProperties\"
-            WHERE userid = {userid}
-            ORDER BY property_id ASC
+            SELECT propertyid, rental FROM public.\"UserProperties\"
+            WHERE userid = \'{userid}\'
+            ORDER BY propertyid ASC
         """)
         
         # Fetch all rows
         res = cursor.fetchall()
 
     except Exception as e:
-        print(f"Error fetching from the PostgreSQL database: {e}")
+        print(f"Error fetching user owned properties from the PostgreSQL database: {e}")
 
     return res
 
@@ -238,7 +247,7 @@ def getEventsInMonth(month):
         res = cursor.fetchall()
 
     except Exception as e:
-        print(f"Error fetching from the PostgreSQL database: {e}")
+        print(f"Error fetching events from the PostgreSQL database: {e}")
 
     return res
 
@@ -253,7 +262,7 @@ def getGraphData(userid):
 
         cursor.execute(f"""
             SELECT * FROM public.\"Financial_records\"
-            WHERE userid = {userid}
+            WHERE userid = \'{userid}\'
             ORDER BY month ASC
         """)
         
@@ -261,7 +270,7 @@ def getGraphData(userid):
         res = cursor.fetchall()
 
     except Exception as e:
-        print(f"Error fetching from the PostgreSQL database: {e}")
+        print(f"Error fetching graph data from the PostgreSQL database: {e}")
 
     return res
 
@@ -296,7 +305,7 @@ def calcMonthlyStats(userid, month):
     #     # Get the rental price for all properties owned by the user
     #     cursor.execute(f"""
     #         SELECT rental FROM public.\"UserProperties\"
-    #         WHERE userid = {userid}
+    #         WHERE userid = \'{userid}\'
     #         ORDER BY property_id ASC
     #     """)
     #     rp = cursor.fetchall()
@@ -332,9 +341,9 @@ def advanceMonth(userid):
         cursor = conn.cursor()
 
         cursor.execute(f"""
-            UPDATE public.\"User_profile\" 
+            UPDATE public.\"UserProfile\" 
             SET current_month = current_month + 1
-            WHERE userid = {userid};
+            WHERE userid = \'{userid}\'
         """)
         
         conn.commit()
@@ -342,7 +351,7 @@ def advanceMonth(userid):
         res = "ok"
 
     except Exception as e:
-        print(f"Error fetching from the PostgreSQL database: {e}")
+        print(f"Error advancing month from the PostgreSQL database: {e}")
         conn.rollback()
         res = str(e)
 
@@ -359,12 +368,12 @@ def buyProperty(userid, propertyid, rent, mortgage, insurance, deduction):
         cursor = conn.cursor()
 
         cursor.execute(f"""
-            INSERT INTO public.\"UserProperties\" (userid, property_id, rental, mortgage_per_month, insurance_per_month)
-            VALUES ({userid}, {propertyid}, {rent}, {mortgage}, {insurance});
+            INSERT INTO public.\"UserProperties\" (userid, propertyid, rental, mortgage_per_month, insurance_per_month)
+            VALUES (\'{userid}\', {propertyid}, {rent}, {mortgage}, {insurance});
 
-            UPDATE public.\"User_profile\" 
+            UPDATE public.\"UserProfile\" 
             SET money = money - {deduction}
-            WHERE userid = {userid};
+            WHERE userid = \'{userid}\';
         """)
         
         conn.commit()
@@ -372,7 +381,7 @@ def buyProperty(userid, propertyid, rent, mortgage, insurance, deduction):
         res = "ok"
 
     except Exception as e:
-        print(f"Error fetching from the PostgreSQL database: {e}")
+        print(f"Error buying property from the PostgreSQL database: {e}")
         conn.rollback()
         res = str(e)
 
@@ -390,7 +399,7 @@ def setRent(userid, propertyid, rent):
         cursor.execute(f"""
             UPDATE public.\"UserProperties\" 
             SET rental = {rent}
-            WHERE userid = {userid} AND property_id = {propertyid};
+            WHERE userid = \'{userid}\' AND propertyid = {propertyid};
         """)
         
         conn.commit()
@@ -398,7 +407,7 @@ def setRent(userid, propertyid, rent):
         res = "ok"
 
     except Exception as e:
-        print(f"Error fetching from the PostgreSQL database: {e}")
+        print(f"Error setting rent from the PostgreSQL database: {e}")
         conn.rollback()
         res = str(e)
 
