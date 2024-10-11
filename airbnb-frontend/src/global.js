@@ -35,7 +35,7 @@ module.exports = {
     boughtPropertyBg: require('../assets/boughtPropertyBg.jpeg'),
     financeOptionsBg: require('../assets/financeOptionBg.jpeg'),
     insuranceOptionsBg: require('../assets/insuranceOptionBg.png'),
-    nextMonthIcon: require('../assets/fastForward.png'),
+    monthlySummaryIcon: require('../assets/fastForward.png'),
     springBg: require('../assets/springbg.png'),
     summerBg: require('../assets/summerbg.png'),
     autumnBg: require('../assets/autumnbg.png'),

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, Button, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 
 const MonthlySummaryBox = ({ guests, income, expenses, propertyValues, onStayCurrentMonth, onGoNextMonth }) => {
   return (
@@ -48,59 +48,70 @@ const MonthlySummaryBox = ({ guests, income, expenses, propertyValues, onStayCur
 
 // Styles for the component
 const styles = StyleSheet.create({
-  container: {
-    padding: 20,
-  },
-  table: {
-    marginBottom: 20,
-  },
-  tableRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginBottom: 10,
-  },
-  tableHeader: {
-    fontWeight: 'bold',
-    fontSize: 16,
-    textAlign: 'center',
-  },
-  tableCell: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    padding: 10,
-    textAlign: 'center',
-    fontSize: 14,
-    flex: 1,
-  },
-  propertyCell: {
-    flex: 1,
-  },
-  mergedCell: {
-    flex: 3, // Merge the entire row into one cell
-    textAlign: 'center',
-  },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  button: {
-    flex: 1,
-    paddingVertical: 12,
-    marginHorizontal: 5,
-    alignItems: 'center',
-    borderRadius: 5,
-  },
-  redButton: {
-    backgroundColor: 'red',
-  },
-  blueButton: {
-    backgroundColor: 'blue',
-  },
-  buttonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 16,
-  },
+    container: {
+        position: 'absolute', // Absolute positioning
+        top: "5%", // Position it as needed
+        left: "5%",
+        right: "5%",
+        backgroundColor: 'white', // White background
+        padding: 20,
+        borderRadius: 10,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.3,
+        shadowRadius: 4,
+        elevation: 5, // For Android shadow
+    },
+    table: {
+        marginBottom: 20,
+    },
+    tableRow: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginBottom: 10,
+    },
+    tableHeader: {
+        fontWeight: 'bold',
+        fontSize: 16,
+        textAlign: 'center',
+    },
+    tableCell: {
+        borderWidth: 1,
+        borderColor: '#ddd',
+        padding: 10,
+        textAlign: 'center',
+        fontSize: 14,
+        flex: 1,
+    },
+    propertyCell: {
+        flex: 1,
+    },
+    mergedCell: {
+        flex: 3, // Merge the entire row into one cell
+        textAlign: 'center',
+    },
+    buttonContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+    },
+    button: {
+        flex: 1,
+        paddingVertical: 12,
+        marginHorizontal: 5,
+        alignItems: 'center',
+        borderRadius: 5,
+    },
+    redButton: {
+        backgroundColor: 'red',
+    },
+    blueButton: {
+        backgroundColor: 'blue',
+    },
+    buttonText: {
+        color: 'white',
+        fontWeight: 'bold',
+        fontSize: 16,
+    },
 });
 
 export default MonthlySummaryBox;

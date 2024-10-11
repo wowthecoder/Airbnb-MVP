@@ -51,8 +51,8 @@ const MainMapScreen = ({ route }) => {
     const [showNoMoney, setShowNoMoney] = useState(false);
     // Event description
     const [eventDesc, setEventDesc] = useState("");
-    // Monthy financial summary display
-    const [showMonthSummary, setShowMonthSummary] = useState(false);
+    // Monthy financial summary display (an object containing num of guests, income, expenses, cash flow, property values)
+    const [monthSummary, setMonthSummary] = useState(null);
     // Boolean controlling whether results are shown (after Dec)
     const [showResults, setShowResults] = useState(false);
 
@@ -179,13 +179,16 @@ const MainMapScreen = ({ route }) => {
         }
     }
 
-    const nextMonth = () => {
-        if (monthSummary === "") {
-            let finances = calcMonthlyFinances(userId, monthMap[stats[0]]);
-            let summary = `Number of guests: ${finances["num_guests"][0]} (AirBnB), ${finances["num_guests"][1]} (hotel), ${finances["num_guests"][2]} (total)\n`
-            setShowNextMonth(true);
-        } else {
+    const monthlySummary = () => {
+        let finances = calcMonthlyFinances(userId, monthMap[stats[0]]);
+        setMonthSummary(finances);
+    }
 
+    const nextMonth = () => {
+        if (stats[0] === "Dec") {
+            setShowResults(true);
+        } else {
+            // advanceMonth(userId);
         }
     }
 
@@ -193,9 +196,9 @@ const MainMapScreen = ({ route }) => {
         <View style={styles.container}>
             <ImageBackground source={Global.cityImg} resizeMode="stretch" style={styles.citybg}>
                 <View style={styles.header}>
-                    <View style={styles.nextMonthBox}>
-                        <TouchableHighlight style={[styles.graphButton, styles.nextMonthButton]} onPress={nextMonth} underlayColor='green'>
-                            <Image source={Global.nextMonthIcon} style={styles.graphIcon} />
+                    <View style={styles.monthlySummaryBox}>
+                        <TouchableHighlight style={[styles.graphButton, styles.monthlySummaryButton]} onPress={monthlySummary} underlayColor='green'>
+                            <Image source={Global.monthlySummaryIcon} style={styles.graphIcon} />
                         </TouchableHighlight>
                     </View>
                     <View style={styles.amountBox}>
@@ -289,13 +292,13 @@ const MainMapScreen = ({ route }) => {
                 </View>
                 }
 
-                {showMonthSummary &&
-                <RentalStatistics
+                {monthSummary !== null &&
+                <MonthlySummaryBox
                     guests={[2, 4, 3]}
                     income={5000.75}
                     expenses={1200.45}
                     propertyValues={[250000, 300000, 450000]}
-                    onStayCurrentMonth={() => console.log('Stayed in current month')}
+                    onStayCurrentMonth={() => setMonthSummary(null)}
                     onGoNextMonth={() => console.log('Going to next month')}
                 />
                 }
@@ -320,7 +323,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
     },
-    nextMonthBox: {
+    monthlySummaryBox: {
         width: "70%",
     },
     graphButton: {
@@ -330,7 +333,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         marginLeft: '1%',
     },
-    nextMonthButton: {
+    monthlySummaryButton: {
         width: "12%",
         backgroundColor: 'blue',
     },

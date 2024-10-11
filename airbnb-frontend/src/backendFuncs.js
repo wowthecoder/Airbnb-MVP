@@ -117,8 +117,8 @@ const calcMonthlyFinances = async (userid, month) => {
         "num_guests": [0] * 3,
         "rental_income": 0,
         "expenses": 0,
-        "net_cash_flow": income - expenses,
-        "property_value": 0,
+        "net_cash_flow": 0,
+        "property_value": 0,5
     }
     try {
         const response = await fetch(`${Global.backendServerUrl}/calculateMonthlyStats/${userid}/${month}`);
@@ -195,4 +195,4 @@ const advanceMonth = async (userid) => {
 }
 
 export { getAreas, getProperties, checkUserIdExists, createUser, getUserStats,
-    getOwnedProperties, buyProperty, setRent, getEventInMonth, advanceMonth };
+    getOwnedProperties, buyProperty, setRent, getEventInMonth, calcMonthlyFinances, advanceMonth };
