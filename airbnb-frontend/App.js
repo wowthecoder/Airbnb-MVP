@@ -12,6 +12,7 @@ import FinanceOptions from './src/screens/FinanceOptionsScreen';
 import InsuranceOptions from './src/screens/InsuranceOptionsScreen';
 import BoughtProperty from './src/screens/BoughtPropertyScreen';
 import ChangeSeasonScreen from './src/screens/ChangeSeasonScreen';
+import ScoreScreen from './src/screens/ScoreScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -28,6 +29,7 @@ const Navigator = () => {
           <Stack.Screen name="InsuranceOptions" component={InsuranceOptions} options={{ headerShown: false }} />
           <Stack.Screen name="BoughtProperty" component={BoughtProperty} options={{ headerShown: false }} />
           <Stack.Screen name="ChangeSeason" component={ChangeSeasonScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Score" component={ScoreScreen} options={{ headerShown: false }} />
         </Stack.Navigator>
     </NavigationContainer>
   )

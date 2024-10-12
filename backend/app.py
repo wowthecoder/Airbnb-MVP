@@ -55,9 +55,10 @@ def calculateMonthlyStats(userid, month):
 def graphData(userid):
     return jsonify(getGraphData(userid))
 
-@app.route('/advanceMonth/<userid>')
-def toNextMonth(userid):
-    res = advanceMonth(userid)
+@app.route('/advanceMonth', methods=['POST'])
+def toNextMonth():
+    data = request.get_json()
+    res = advanceMonth(data['userid'], data['diff'])
     if res == "ok":
         return jsonify({"message": "Advanced to next month"}), 200
     else:

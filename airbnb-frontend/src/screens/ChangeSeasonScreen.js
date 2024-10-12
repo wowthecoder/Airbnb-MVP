@@ -32,7 +32,7 @@ const ChangeSeasonScreen = ({ route }) => {
     return (
         <TouchableWithoutFeedback onPress={backToMap}>
             <View style={styles.container}>
-                <ImageBackground source={backgroundImage} resizeMode="stretch" style={styles.citybg}>
+                <ImageBackground source={backgroundImage} resizeMode="stretch" style={styles.seasonbg}>
                     <Text style={styles.text}>{announceText}</Text>
                 </ImageBackground>
             </View>
@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         width: "50%",
         padding: 10,
-        marginLeft: "20%",
+        marginRight: "10%",
     },
 });
 

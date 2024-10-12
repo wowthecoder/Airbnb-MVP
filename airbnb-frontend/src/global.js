@@ -18,6 +18,7 @@ module.exports = {
     handsUpImg : require('../assets/Infi/Hands up in the air.png'),
     pointingImg: require('../assets/Infi/Pointing.png'),
     smirkingImg: require('../assets/Infi/Smirking.png'),
+    thumbsUpImg: require('../assets/Infi/Thumbs up.png'),
     cityImg: require('../assets/city.jpg'),
     cityBannerImg: require('../assets/city-with-banner.png'),
     cityPropertiesImg: require('../assets/city-with-properties.png'),
@@ -39,6 +40,6 @@ module.exports = {
     springBg: require('../assets/springbg.png'),
     summerBg: require('../assets/summerbg.png'),
     autumnBg: require('../assets/autumnbg.png'),
-    backendServerUrl: 'http://172.26.255.4:5000', // for testing on campus
-    // backendServerUrl: 'http://10.136.143.3:5000', // for testing in accom
+    // backendServerUrl: 'http://172.26.255.4:5000', // for testing on campus
+    backendServerUrl: 'http://10.136.143.3:5000', // for testing in accom
 } 

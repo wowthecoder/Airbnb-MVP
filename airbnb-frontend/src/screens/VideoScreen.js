@@ -13,7 +13,7 @@ const VideoScreen = () => {
     const navigation = useNavigation();
 
     const goNextScreen = () => {  
-        navigation.navigate(nextScreen);
+        navigation.navigate('Score');
     }
 
     // const onFullscreenUpdate = async ({ fullscreenUpdate }) => {
@@ -68,11 +68,12 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
     },
     video: {
+        // marginTop: '10%',
         width: '100%',
-        height: '50%',
+        height: '60%',
     },
     button: {
-        marginTop: '15%',
+        marginTop: '5%',
         width: '50%',
         backgroundColor: '#3d62fa',
         borderRadius: 10,

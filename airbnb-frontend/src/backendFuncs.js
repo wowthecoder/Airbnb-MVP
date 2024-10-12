@@ -112,17 +112,19 @@ const getOwnedProperties = async (userid, setProperties) => {
     }
 }
 
-const calcMonthlyFinances = async (userid, month) => {
+const calcMonthlyFinances = async (userid, month, setMonthSummary) => {
     res = {
         "num_guests": [0] * 3,
         "rental_income": 0,
         "expenses": 0,
         "net_cash_flow": 0,
-        "property_value": 0,5
+        "property_values": [0] * 3,
     }
     try {
         const response = await fetch(`${Global.backendServerUrl}/calculateMonthlyStats/${userid}/${month}`);
-        const res = await response.json();
+        res = await response.json();
+        console.log("monthly finances", res);
+        setMonthSummary(res);
     } catch (error) {
         console.error("Error fetching monthly finances:", error);
     }
@@ -184,9 +186,18 @@ const getEventInMonth = async (month) => {
     }
 }
 
-const advanceMonth = async (userid) => {
+const advanceMonth = async (userid, netCashFlow) => {
     try {
-        const response = await fetch(`${Global.backendServerUrl}/toNextMonth/${userid}`);
+        const response = await fetch(`${Global.backendServerUrl}/advanceMonth`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userid: userid,
+                diff: netCashFlow,
+            }),
+        });
         const res = await response.json();
         console.log("Advancing month: ", res);
     } catch (error) {

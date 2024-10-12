@@ -197,8 +197,9 @@ def getUserById(id):
 
         # Flatten into single list
         res = res[0]
+
         # round money to nearest integer
-        res[2] = round(res[2])
+        res = (res[0], res[1], round(res[2]))
 
     except Exception as e:
         print(f"Error fetching user stats from the PostgreSQL database: {e}")
@@ -283,15 +284,21 @@ def calcMonthlyStats(userid, month):
     if not conn:
         print(connectToDb())
 
+    month = int(month)
     income = random.randint(1000, 5000)
     expenses = random.randint(500, 2000)
     growth_rate = [0.05/12, 0.035/12, 0.04/12]
+    property_values = [200000, 100000, 150000]
+    for i in range(len(property_values)):
+        property_values[i] += property_values[i] * growth_rate[i] * month 
+        property_values[i] = round(property_values[i])
+
     res = {
-        "num_guests": [random.randint(10, 100)] * 3,
+        "num_guests": [random.randint(10, 100), random.randint(10, 100), random.randint(10, 100)],
         "rental_income": income,
         "expenses": expenses,
         "net_cash_flow": income - expenses,
-        "property_value": [200000+growth_rate[0]*month, 100000+growth_rate[1]*month, 150000+growth_rate[2]*month]
+        "property_values": property_values
     }
 
     # try:      
@@ -335,7 +342,8 @@ def calcMonthlyStats(userid, month):
 
     return res
 
-def advanceMonth(userid):
+# Add 1 to month and modify the money
+def advanceMonth(userid, diff):
     global conn
     if not conn:
         print(connectToDb())
@@ -346,8 +354,9 @@ def advanceMonth(userid):
 
         cursor.execute(f"""
             UPDATE public.\"UserProfile\" 
-            SET current_month = current_month + 1
-            WHERE userid = \'{userid}\'
+            SET current_month = current_month + 1,
+                money = money + {diff}
+            WHERE userid = \'{userid}\';
         """)
         
         conn.commit()

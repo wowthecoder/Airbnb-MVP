@@ -149,18 +149,17 @@ const MainMapScreen = ({ route }) => {
     }
 
     const buyProperty = ( number ) => {
-        if (stats[2] < properties[number - 1][1]) {
-            setShowNoMoney(true);
-        } else { 
-            // console.log("initial rent:", properties[number - 1][7], ", full price:", properties[number - 1][1]);   
-            navigation.navigate('FinanceOptions', {
-                userId: userId, 
-                propertyId: number, 
-                initialRent: properties[number - 1][7],
-                fullPrice: properties[number - 1][1],
-                renovateCost: properties[number - 1][4],
-            });
-        }
+        // if (stats[2] < properties[number - 1][1]) {
+        //     setShowNoMoney(true);
+        // } else { 
+        navigation.navigate('FinanceOptions', {
+            userId: userId, 
+            propertyId: number, 
+            initialRent: properties[number - 1][7],
+            fullPrice: properties[number - 1][1],
+            renovateCost: properties[number - 1][4],
+        });
+        // }
     }
 
     const buyOrChangeRental = ( number ) => {
@@ -180,16 +179,30 @@ const MainMapScreen = ({ route }) => {
     }
 
     const monthlySummary = () => {
-        let finances = calcMonthlyFinances(userId, monthMap[stats[0]]);
-        setMonthSummary(finances);
+        calcMonthlyFinances(userId, monthMap[stats[0]], setMonthSummary);
     }
 
     const nextMonth = () => {
+        setMonthSummary(null)
         if (stats[0] === "Dec") {
             setShowResults(true);
         } else {
-            // advanceMonth(userId);
+            // show the change season screens
+            if (stats[0] == "Mar") {
+                navigation.navigate("ChangeSeason", { season: "spring", userId: userId });
+            } else if (stats[0] == "Jun") {
+                navigation.navigate("ChangeSeason", { season: "summer", userId: userId });
+            } else if (stats[0] == "Sep") {
+                navigation.navigate("ChangeSeason", { season: "autumn", userId: userId });
+            }
+            advanceMonth(userId, monthSummary["net_cash_flow"]);
+            getUserStats(userId, setStats);
         }
+    }
+
+    const goToDebriefing = () => {  
+        setShowResults(false);
+        navigation.navigate('Video');
     }
 
     return (
@@ -286,21 +299,41 @@ const MainMapScreen = ({ route }) => {
                 </TouchableWithoutFeedback>
                 }
 
-                {showNoMoney &&
+                {/* {showNoMoney &&
                 <View style={styles.hintBox}>
                     <Text style={[styles.hint, { color: "red" }]}>You don't have enough money to buy this property.</Text>
                 </View>
-                }
+                } */}
 
                 {monthSummary !== null &&
                 <MonthlySummaryBox
-                    guests={[2, 4, 3]}
-                    income={5000.75}
-                    expenses={1200.45}
-                    propertyValues={[250000, 300000, 450000]}
+                    guests={monthSummary["num_guests"]}
+                    income={monthSummary["rental_income"]}
+                    expenses={monthSummary["expenses"]}
+                    propertyValues={monthSummary["property_values"]}
                     onStayCurrentMonth={() => setMonthSummary(null)}
-                    onGoNextMonth={() => console.log('Going to next month')}
+                    onGoNextMonth={nextMonth}
                 />
+                }
+
+                {showResults &&
+                <View style={styles.rowContainer}>
+                    {/* Avatar Image */}
+                    <Image source={Global.pointingImg} style={styles.avatar} />
+            
+                    {/* Text Box and Button */}
+                    <View style={styles.resultsBoxContainer}>
+                        {/* Text Box */}
+                        <View style={styles.resultsBox}>
+                            <Text style={styles.debriefText}>{Global.successMsg}</Text>
+                        </View>
+
+                        {/* Debriefing Button */}
+                        <TouchableHighlight style={styles.debriefingButton} onPress={goToDebriefing} underlayColor="green">
+                            <Text style={styles.debriefText}>To Debriefing</Text>
+                        </TouchableHighlight>
+                    </View>
+                </View>
                 }
             </ImageBackground>
         </View>
@@ -433,6 +466,47 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: "center",
     },
+    rowContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        padding: 20,
+        height: '80%',
+    },
+    avatar: {
+        width: "30%", // Adjust the size of the avatar as needed
+        height: "80%",
+        resizeMode: 'contain',
+        marginBottom: 20, // Space between avatar and text box
+    },
+    resultsBoxContainer: {
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    resultsBox: {
+        backgroundColor: 'white',
+        padding: 15,
+        borderRadius: 10,
+        width: '80%', // Adjust width to fit the screen nicely
+        marginBottom: 20, // Space between text box and button
+    },
+    debriefText: {
+        color: 'black',
+        fontSize: 16,
+        textAlign: 'center',
+    },
+    debriefingButton: {
+        backgroundColor: '#007BFF', // Blue button
+        paddingVertical: 12,
+        paddingHorizontal: 30,
+        borderRadius: 10,
+    },
+    buttonText: {
+        color: 'white',
+        fontSize: 16,
+        fontWeight: 'bold',
+    }    
 });
 
 export default MainMapScreen;
